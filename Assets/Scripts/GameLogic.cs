@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 namespace RollToFinal
 {
@@ -45,6 +46,13 @@ namespace RollToFinal
         /// 平台生成表
         /// </summary>
         public List<PlatformGenerateItem> PlatformGenerateTable;
+
+        
+        [Header("时间轴")]
+        /// <summary>
+        /// 开场时间轴
+        /// </summary>
+        public PlayableDirector OpeningDirector;
 
         [Header("运行数据")]
         /// <summary>
@@ -130,6 +138,7 @@ namespace RollToFinal
 
         private void Start()
         {
+            OpeningDirector.Play();
             GeneratePlatform();
         }
 
