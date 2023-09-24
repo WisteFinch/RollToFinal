@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +39,7 @@ namespace RollToFinal
             /// <summary>
             /// 比例
             /// </summary>
+            [Range(0, 10)]
             public float ratio;
             /// <summary>
             /// 标题
@@ -64,15 +66,39 @@ namespace RollToFinal
             /// </summary>
             public string title;
             /// <summary>
-            /// 比例和
+            /// 绘制终止三角形数
             /// </summary>
-            public float count;
+            public int terminateCount;
+            /// <summary>
+            /// 中线
+            /// </summary>
+            public int median;
         }
 
         /// <summary>
         /// 划分
         /// </summary>
         public List<DivideItem> Divides = new();
+
+        /// <summary>
+        /// 文字半径偏移
+        /// </summary>
+        public float TextRadiusOffset = 10f;
+
+        /// <summary>
+        /// 显示划分占比
+        /// </summary>
+        public bool ShowDividesRatio = false;
+
+        /// <summary>
+        /// 划分占比提示颜色
+        /// </summary>
+        public Color DivideRatioColor = Color.white;
+
+        /// <summary>
+        /// 文字样式
+        /// </summary>
+        public GUIStyle TextStyle;
 
         /// <summary>
         /// 精灵图片
@@ -222,23 +248,31 @@ namespace RollToFinal
 
             bool hasDivides = false;
             List<RuntimeDivideItem> divides = new();
-            float sum_ratio = 0;
+            float sum_ratio = 0f;
+            foreach (var v in Divides)
+                sum_ratio += v.ratio;
+            float cur_ratio = 0f;
+            float last_ratio = 0f;
             foreach (var v in Divides)
             {
                 if(v.ratio > 0f)
                 {
                     hasDivides = true;
-                    sum_ratio += (int)(v.ratio * count);
-                    RuntimeDivideItem item = new();
-                    item.count = sum_ratio;
-                    item.title = v.title;
-                    item.ratio = v.ratio;
-                    item.color = v.color;
+                    cur_ratio += v.ratio;
+                    RuntimeDivideItem item = new()
+                    {
+                        terminateCount = (int)(cur_ratio / sum_ratio * count),
+                        title = v.title,
+                        ratio = v.ratio,
+                        color = v.color,
+                        median = (int)((cur_ratio + last_ratio) / 2f / sum_ratio * count)
+                    };
                     divides.Add(item);
+                    last_ratio = cur_ratio;
                 }
             }
             int current_divide = 0;
-            Debug.Log(divides.Count);
+
 
             for (int i = 1; i <= count; i++)
             {
@@ -267,21 +301,25 @@ namespace RollToFinal
                 }
 
                 // 设置顶点的颜色坐标以及uv
-                for (int j = 0; j < 4; j++)
+                if (hasDivides)
                 {
-                    if(hasDivides)
+                    if (i > divides[current_divide].terminateCount)
+                        current_divide++;
+                    for (int j = 0; j < 4; j++)
                     {
-                        if(i > divides[current_divide].count / sum_ratio * count)
-                            current_divide++;
                         m_vertexes[j].color = divides[current_divide].color;
-                        
+                        m_vertexes[j].position = m_positions[j];
+                        m_vertexes[j].uv0 = m_uvs[j];
                     }
-                    else
+                }
+                else
+                {
+                    for (int j = 0; j < 4; j++)
                     {
                         m_vertexes[j].color = color;
+                        m_vertexes[j].position = m_positions[j];
+                        m_vertexes[j].uv0 = m_uvs[j];
                     }
-                    m_vertexes[j].position = m_positions[j];
-                    m_vertexes[j].uv0 = m_uvs[j];
                 }
 
                 //当前顶点数量
@@ -329,14 +367,99 @@ namespace RollToFinal
 
         private void OnGUI()
         {
-            Vector2 result = transform.localPosition;
-            //Vector3 realPosition = getScreenPosition(transform, ref result);
-            GUIStyle guiStyleX = new GUIStyle();
-            guiStyleX.normal.textColor = Color.white;
-            guiStyleX.fontSize = 50;
-            guiStyleX.fontStyle = FontStyle.Bold;
-            guiStyleX.alignment = TextAnchor.MiddleLeft;
-            GUI.Label(new Rect(result,new Vector2(100,100)), "233", guiStyleX);
+            Vector3 result = transform.localPosition;
+            Vector3 realPosition = GetScreenPosition(transform, ref result);
+
+            //每个面片的角度
+            float degrees = 360f / Segments;
+            //需要绘制的面片数量
+            int count = (int)(Segments * m_fillAmount);
+
+            float cos, sin;
+
+            bool hasDivides = false;
+            List<RuntimeDivideItem> divides = new();
+            float sum_ratio = 0f;
+            foreach (var v in Divides)
+                sum_ratio += v.ratio;
+            float cur_ratio = 0f;
+            float last_ratio = 0f;
+            foreach (var v in Divides)
+            {
+                if(v.ratio > 0f)
+                {
+                    hasDivides = true;
+                    cur_ratio += v.ratio;
+                    RuntimeDivideItem item = new()
+                    {
+                        terminateCount = (int)(cur_ratio / sum_ratio * count),
+                        title = v.title,
+                        ratio = v.ratio,
+                        color = v.color,
+                        median = (int)((cur_ratio + last_ratio) / 2f / sum_ratio * count)
+                    };
+                    divides.Add(item);
+                    last_ratio = cur_ratio;
+                }
+            }
+            int current_divide = 0;
+
+
+            for (int i = 1; i <= count; i++)
+            {
+                //当前面片的弧度 + 起始弧度 = 终止弧度
+                float endRadian = i * degrees * Mathf.Deg2Rad * (IsClockwise ? 1 : -1) + m_originRadian;
+                cos = Mathf.Cos(endRadian);
+                sin = Mathf.Sin(endRadian);
+
+                if (hasDivides)
+                {
+                    if (i > divides[current_divide].terminateCount)
+                        current_divide++;
+                    if(i == divides[current_divide].median)
+                    {
+                        Vector2 dir = new(-OuterRadius * cos, OuterRadius * sin);
+                        dir.Normalize();
+                        if(ShowDividesRatio)
+                        {
+                            GUI.Label(new Rect(LocalToScreen(realPosition, dir * (OuterRadius + TextRadiusOffset)), new(0, 0)), $"{divides[current_divide].title}<color=#{DivideRatioColor.ToHexString()}>({(int)(divides[current_divide].ratio / sum_ratio * 100)}%)</color>", TextStyle);
+                        }
+                        else
+                        {
+
+                            GUI.Label(new Rect(LocalToScreen(realPosition, dir * (OuterRadius + TextRadiusOffset)), new(0, 0)), divides[current_divide].title, TextStyle);
+                        }
+                    }
+                }
+            }
+        }
+
+        private Vector2 GetScreenPosition(Transform trans, ref Vector3 result)
+        {
+            if (null != trans.parent && null != trans.parent.parent)
+            {
+                result += trans.parent.localPosition;
+                GetScreenPosition(trans.parent, ref result);
+            }
+            if (null != trans.parent && null == trans.parent.parent)
+                return result;
+            return result;
+        }
+
+        //本地坐标转化屏幕坐标绘制GUI文字
+        private Vector2 LocalToScreen(Vector2 parentPos, Vector2 localPosition)
+        {
+            Vector2 pos = localPosition + parentPos;
+            float xValue, yValue = 0;
+            if (pos.x > 0)
+                xValue = pos.x + Screen.width / 2.0f;
+            else
+                xValue = Screen.width / 2.0f - Mathf.Abs(pos.x);
+            if (pos.y > 0)
+                yValue = Screen.height / 2.0f - pos.y;
+            else
+                yValue = Screen.height / 2.0f + Mathf.Abs(pos.y);
+            return new Vector2(xValue, yValue);
         }
     }
 }
