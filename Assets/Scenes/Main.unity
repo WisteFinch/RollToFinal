@@ -841,6 +841,10 @@ MonoBehaviour:
     type: 3}
   EndBlock: {fileID: 7362363394570901005, guid: f5f5cd4b5859d69459bcf1a1101631c8,
     type: 3}
+  Player1Camera: {fileID: 2050624771}
+  Player2Camera: {fileID: 1375804156}
+  OverallCamera: {fileID: 1801807642}
+  PlayerMiddleViewCamera: {fileID: 358456339}
   PlatformGenerateTable:
   - Block: {fileID: 7362363394570901005, guid: d2ef8b943b92a184184ef06ef6137f0e, type: 3}
     Odds: 10
@@ -849,6 +853,8 @@ MonoBehaviour:
   - Block: {fileID: 7362363394570901005, guid: c9d6dccefa11f8747b64c3c46f916604, type: 3}
     Odds: 1
   OpeningDirector: {fileID: 1887575955}
+  CurrentGameState: 0
+  CurrentPlayer: 1
   PlatformBlocks1: []
   PlatformBlocks2: []
 --- !u!4 &863265011
@@ -1230,7 +1236,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375804156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1675509, y: -0.2548955, z: 0.044895135, w: 0.95128304}
+  m_LocalRotation: {x: 0.1675509, y: -0.25489548, z: 0.044895124, w: 0.95128304}
   m_LocalPosition: {x: 5, y: 5, z: -8.6602545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2063,7 +2069,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050624771}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1675509, y: 0.2548955, z: -0.044895135, w: 0.95128304}
+  m_LocalRotation: {x: 0.1675509, y: 0.25489548, z: -0.044895124, w: 0.95128304}
   m_LocalPosition: {x: -5, y: 5, z: -8.6602545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

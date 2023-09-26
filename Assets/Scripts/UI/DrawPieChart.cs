@@ -9,7 +9,7 @@ namespace RollToFinal
 {
 
     [ExecuteInEditMode]
-    public class DrawSquald : MaskableGraphic
+    public class DrawPieChart: MaskableGraphic
     {
         /// <summary>
         /// 形状枚举
@@ -460,6 +460,14 @@ namespace RollToFinal
             else
                 yValue = Screen.height / 2.0f + Mathf.Abs(pos.y);
             return new Vector2(xValue, yValue);
+        }
+
+        /// <summary>
+        /// 重新绘制
+        /// </summary>
+        public void ReDraw()
+        {
+            UpdateGeometry();
         }
     }
 }

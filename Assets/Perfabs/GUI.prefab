@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 4191826243537202417}
   - component: {fileID: 6987299962159732765}
   - component: {fileID: 5731731440820553732}
+  - component: {fileID: 7879113568307774097}
   m_Layer: 5
   m_Name: Player2Ratio
   m_TagString: Untagged
@@ -251,6 +252,50 @@ MonoBehaviour:
   Segments: 360
   m_originType: 0
   m_isClockwise: 1
+--- !u!114 &7879113568307774097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4413640898450631949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d577dda1b908b3944a9688ebdb588f05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PieChart: {fileID: 5731731440820553732}
+  Divides:
+  - color: {r: 0.54509807, g: 0, b: 0, a: 1}
+    ratio: 1
+    title: 1
+  - color: {r: 0.69803923, g: 0.13333334, b: 0.13333334, a: 1}
+    ratio: 1
+    title: 2
+  - color: {r: 1, g: 0, b: 0, a: 1}
+    ratio: 1
+    title: 3
+  - color: {r: 1, g: 0.27058825, b: 0, a: 1}
+    ratio: 0
+    title: 4
+  - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
+    ratio: 0
+    title: 5
+  - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
+    ratio: 0
+    title: 6
+  - color: {r: 0.9411765, g: 0.5019608, b: 0.5019608, a: 1}
+    ratio: 0
+    title: 7
+  - color: {r: 0.9137255, g: 0.5882353, b: 0.47843137, a: 1}
+    ratio: 0
+    title: 8
+  - color: {r: 0.8039216, g: 0.36078432, b: 0.36078432, a: 1}
+    ratio: 0
+    title: 9
+  - color: {r: 0.85882354, g: 0.4392157, b: 0.5764706, a: 1}
+    ratio: 0
+    title: 10
 --- !u!1 &8071027867245839547
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,6 +307,7 @@ GameObject:
   - component: {fileID: 8368802958026268802}
   - component: {fileID: 3777998638870375892}
   - component: {fileID: 2639344343591371092}
+  - component: {fileID: 6718489723206550358}
   m_Layer: 5
   m_Name: Player1Ratio
   m_TagString: Untagged
@@ -425,6 +471,50 @@ MonoBehaviour:
   Segments: 360
   m_originType: 0
   m_isClockwise: 1
+--- !u!114 &6718489723206550358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8071027867245839547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d577dda1b908b3944a9688ebdb588f05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PieChart: {fileID: 2639344343591371092}
+  Divides:
+  - color: {r: 0.09803922, g: 0.09803922, b: 0.4392157, a: 1}
+    ratio: 1
+    title: 1
+  - color: {r: 0, g: 0, b: 0.6666667, a: 1}
+    ratio: 1
+    title: 2
+  - color: {r: 0, g: 0, b: 1, a: 1}
+    ratio: 1
+    title: 3
+  - color: {r: 0.25490198, g: 0.4117647, b: 0.88235295, a: 1}
+    ratio: 0
+    title: 4
+  - color: {r: 0.27450982, g: 0.50980395, b: 0.7058824, a: 1}
+    ratio: 0
+    title: 5
+  - color: {r: 0.39215687, g: 0.58431375, b: 0.92941177, a: 1}
+    ratio: 0
+    title: 6
+  - color: {r: 0, g: 0.7490196, b: 1, a: 1}
+    ratio: 0
+    title: 7
+  - color: {r: 0.5294118, g: 0.80784315, b: 0.92156863, a: 1}
+    ratio: 0
+    title: 8
+  - color: {r: 0.5294118, g: 0.80784315, b: 0.98039216, a: 1}
+    ratio: 0
+    title: 9
+  - color: {r: 0.9411765, g: 0.972549, b: 1, a: 1}
+    ratio: 0
+    title: 10
 --- !u!1 &9034711896830763120
 GameObject:
   m_ObjectHideFlags: 0
