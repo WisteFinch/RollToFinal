@@ -14,7 +14,7 @@ namespace RollToFinal
         /// <summary>
         /// 变化率
         /// </summary>
-        public float ChangeRate = 0f;
+        public float ChangeRate = 0.05f;
 
         /// <summary>
         /// 划分
@@ -43,13 +43,19 @@ namespace RollToFinal
 
         private void Start()
         {
-            CurrentDivides = Divides;
+            CurrentDivides.Clear();
+            Divides.ForEach(divide => CurrentDivides.Add(divide));
+            CleanRubbishItem(ref CurrentDivides);
+            PieChart.Divides = CurrentDivides;
             ChangeFinished = true;
         }
 
         private void Awake()
         {
-            CurrentDivides = Divides;
+            CurrentDivides.Clear();
+            Divides.ForEach(divide => CurrentDivides.Add(divide));
+            CleanRubbishItem( ref CurrentDivides);
+            PieChart.Divides = CurrentDivides;
             ChangeFinished = true;
         }
 
@@ -65,24 +71,63 @@ namespace RollToFinal
         {
             if (ChangeFinished)
                 return;
-            if(ChangeRate == 0f)
+            if (ChangeRate == 0f)
             {
-                CurrentDivides = Divides;
-                PieChart.Divides = CurrentDivides;
+                CurrentDivides.Clear();
+                Divides.ForEach(divide => CurrentDivides.Add(divide));
+                ChangeFinished = true;
             }
             else
             {
-
+                CalcRateCount(ref CurrentDivides, ref CurrentDividesRatioCount);
+                bool flag = true;
+                int min_count = Divides.Count > CurrentDivides.Count ? CurrentDivides.Count : Divides.Count;
+                float ratio_average = (CurrentDividesRatioCount + DividesRatioCount) / 2;
+                for (int i = 0; i < min_count; i++)
+                {
+                    if (!Divides[i].Equals(CurrentDivides[i]))
+                    {
+                        var item = Divides[i];
+                        item.ratio = Mathf.MoveTowards(CurrentDivides[i].ratio, item.ratio, ratio_average * ChangeRate);
+                        CurrentDivides[i] = item;
+                        flag = false;
+                    }
+                }
+                if (Divides.Count > CurrentDivides.Count)
+                {
+                    flag = false;
+                    for (int i = CurrentDivides.Count; i < Divides.Count; i++)
+                    {
+                        var item = Divides[i];
+                        item.ratio = Mathf.MoveTowards(0f, item.ratio, ratio_average * ChangeRate);
+                        CurrentDivides.Add(item);
+                    }
+                }
+                if (Divides.Count < CurrentDivides.Count)
+                {
+                    flag = false;
+                    for (int i = CurrentDivides.Count - 1; i >= Divides.Count; i--)
+                    {
+                        var item = CurrentDivides[i];
+                        item.ratio = Mathf.MoveTowards(item.ratio, 0, ratio_average * ChangeRate);
+                        CurrentDivides[i] = item;
+                        if (CurrentDivides[i].ratio == 0f)
+                            CurrentDivides.RemoveAt(i);
+                    }
+                }
+                if (flag)
+                {
+                    ChangeFinished = true;
+                    CleanRubbishItem(ref CurrentDivides);
+                }
             }
-
             PieChart.ReDraw();
         }
 
+
         private void OnValidate()
         {
-            ChangeFinished = false;
-            CalcRateCount(ref Divides, ref DividesRatioCount);
-            CalcRateCount(ref CurrentDivides, ref CurrentDividesRatioCount);
+            OnValueChanged();
         }
 
         /// <summary>
@@ -96,6 +141,24 @@ namespace RollToFinal
             foreach(var i in divides)
             {
                 count += i.ratio;
+            }
+        }
+
+        /// <summary>
+        /// 值改变
+        /// </summary>
+        public void OnValueChanged()
+        {
+            ChangeFinished = false;
+            CalcRateCount(ref Divides, ref DividesRatioCount);
+        }
+
+        public void CleanRubbishItem(ref List<DrawPieChart.DivideItem> divides)
+        {
+            for(int i = divides.Count - 1; i >= 0; i--)
+            {
+                if (divides[i].ratio == 0f)
+                    divides.RemoveAt(i);
             }
         }
     }
