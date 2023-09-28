@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 namespace RollToFinal
 {
@@ -72,6 +74,16 @@ namespace RollToFinal
         public GameObject Platform2;
 
         /// <summary>
+        /// 玩家1
+        /// </summary>
+        public GameObject Player1;
+
+        /// <summary>
+        /// 玩家2
+        /// </summary>
+        public GameObject Player2;
+
+        /// <summary>
         /// 起始方块
         /// </summary>
         public GameObject BeginBlock;
@@ -101,6 +113,11 @@ namespace RollToFinal
         /// </summary>
         public GameObject PlayerMiddleViewCamera;
 
+        /// <summary>
+        /// 输入
+        /// </summary>
+        public PlayerInput Input;
+
 
         /// <summary>
         /// 平台生成表
@@ -113,6 +130,17 @@ namespace RollToFinal
         /// 开场时间轴
         /// </summary>
         public PlayableDirector OpeningDirector;
+
+        /// <summary>
+        /// 掷骰子时间轴
+        /// </summary>
+        public PlayableDirector RollingDirector;
+
+        [Header("GUI")]
+        /// <summary>
+        /// 掷骰子结果
+        /// </summary>
+        public Text RollResult;
 
         [Header("运行数据")]
 
@@ -138,9 +166,45 @@ namespace RollToFinal
         [HideInInspector]
         public List<GameObject> PlatformBlocks2 = new();
 
-        private float SumOdds = 0;
+        /// <summary>
+        /// 平台方块总概率
+        /// </summary>
+        private float SumPlatformBlocksOdds = 0;
 
+        /// <summary>
+        /// 玩家1概率列表
+        /// </summary>
+        private List<float> Player1Odds;
 
+        /// <summary>
+        /// 玩家2概率列表
+        /// </summary>
+        private List<float> Player2Odds;
+
+        private void Start()
+        {
+            GeneratePlatform();
+            OnChangeState();
+            ResetOdds(1);
+            ResetOdds(2);
+        }
+
+        private void OnDestroy()
+        {
+            // 销毁原有平台
+            PlatformBlocks1.Clear();
+            foreach (var item in PlatformBlocks1)
+            {
+                Destroy(item);
+            }
+            PlatformBlocks2.Clear();
+            foreach (var item in PlatformBlocks2)
+            {
+                Destroy(item);
+            }
+        }
+
+        #region 平台
         /// <summary>
         /// 生成平台
         /// </summary>
@@ -157,9 +221,9 @@ namespace RollToFinal
                 Destroy(item);
             }
             // 计算概率和
-            SumOdds = 0;
+            SumPlatformBlocksOdds = 0;
             foreach (var item in PlatformGenerateTable) {
-                SumOdds += item.Odds;
+                SumPlatformBlocksOdds += item.Odds;
             }
             // 创建起点
             AddBlock(BeginBlock);
@@ -178,7 +242,7 @@ namespace RollToFinal
         /// <returns>选取的预制体</returns>
         private GameObject GenerateBlock()
         {
-            float rand = UnityEngine.Random.Range(0f, SumOdds);
+            float rand = UnityEngine.Random.Range(0f, SumPlatformBlocksOdds);
             foreach(var item in PlatformGenerateTable)
             {
                 rand -= item.Odds;
@@ -209,27 +273,9 @@ namespace RollToFinal
             }
         }
 
-        private void Start()
-        {
-            GeneratePlatform();
-            OnChangeState();
-        }
+        #endregion
 
-        private void OnDestroy()
-        {
-            // 销毁原有平台
-            PlatformBlocks1.Clear();
-            foreach (var item in PlatformBlocks1)
-            {
-                Destroy(item);
-            }
-            PlatformBlocks2.Clear();
-            foreach (var item in PlatformBlocks2)
-            {
-                Destroy(item);
-            }
-        }
-
+        #region 时间轴与状态
         /// <summary>
         /// 时间轴动画结束后调用状态改变函数
         /// </summary>
@@ -259,10 +305,102 @@ namespace RollToFinal
                     break;
                 // 开场运镜
                 case GameState.Opening:
-                    CurrentPlayer = 1;
+                    SwitchPlayer(1);
                     CurrentGameState = GameState.PlayerIdle;
-                break;
+                    break;
+                // 掷骰子
+                case GameState.Rolling:
+                    if (CurrentPlayer == 1)
+                    {
+                        var pos = Player1.transform.position;
+                        pos.z += DataSystem.Instance.GetData("MoveStep");
+                        Player1.transform.position = pos;
+                        SwitchPlayer(2);
+                    }
+                    else
+                    {
+                        var pos = Player2.transform.position;
+                        pos.z += DataSystem.Instance.GetData("MoveStep");
+                        Player2.transform.position = pos;
+                        SwitchPlayer(1);
+                    }
+                    CurrentGameState = GameState.PlayerIdle;
+                    break;
             }
         }
+        #endregion
+
+
+        #region 玩家
+
+        public void SwitchPlayer(int player)
+        {
+            if(player == 1)
+            {
+                CurrentPlayer = 1;
+                Player1Camera.SetActive(true);
+                Player2Camera.SetActive(false);
+                Input.SwitchCurrentActionMap("Player1");
+            }
+            else if(player == 2)
+            {
+                CurrentPlayer = 2;
+                Player1Camera.SetActive(false);
+                Player2Camera.SetActive(true);
+                Input.SwitchCurrentActionMap("Player2Keyboard");
+            }
+        }
+
+        #endregion
+
+        #region 掷骰子
+
+        /// <summary>
+        /// 重置概率
+        /// </summary>
+        /// <param name="player">玩家编号</param>
+        private void ResetOdds(int player)
+        {
+            if(player == 1)
+            {
+                Player1Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, 0f, 0f };
+            } else if(player == 2)
+            {
+                Player2Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, 0f, 0f };
+            }
+        }
+
+        private int GetRollResult(List<float> odds)
+        {
+            float sum = 0f;
+            foreach (var i in odds)
+                sum += i;
+            float r = UnityEngine.Random.Range(0,sum);
+            for(int i = 0; i < odds.Count; i++)
+            {
+                if (r <= odds[i])
+                    return i + 1;
+                r -= odds[i];
+            }
+            return 1;
+        }
+
+        /// <summary>
+        /// 玩家掷骰子
+        /// </summary>
+        /// <param name="Player">玩家序号</param>
+        public void PlayerRoll(int player)
+        {
+            if(player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
+            {
+                CurrentGameState = GameState.Rolling;
+                int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
+                RollResult.text = res.ToString();
+                DataSystem.Instance.SetData("MoveStep", res);
+                PlayAndInvoke(RollingDirector);
+            }
+        }
+
+        #endregion
     }
 }

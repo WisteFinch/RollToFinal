@@ -1,5 +1,5 @@
 {
-    "name": "Controls",
+    "name": "InputActions",
     "maps": [
         {
             "name": "Player1",
@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Lucky",
+                    "name": "Use",
                     "type": "Button",
                     "id": "353ac66e-d607-49e6-b081-e4716e6d3bed",
                     "expectedControlType": "Button",
@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Calamity",
+                    "name": "Special",
                     "type": "Button",
                     "id": "563a140a-32e7-4492-a0e3-8552680e5e72",
                     "expectedControlType": "Button",
@@ -103,22 +103,22 @@
                 {
                     "name": "",
                     "id": "47d64dd8-7937-4fa4-a4b2-e3b0b5767e6a",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Lucky",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "3eff9d4c-4639-4c64-af49-d0921fd8b44f",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Calamity",
+                    "action": "Special",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -138,7 +138,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Calamity",
+                    "name": "Use",
                     "type": "Button",
                     "id": "84f19c52-a4d3-4ed1-9c81-257460913b82",
                     "expectedControlType": "Button",
@@ -147,7 +147,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Lucky",
+                    "name": "Special",
                     "type": "Button",
                     "id": "c184ee0e-55d5-43ae-aff8-0c1f3a05d017",
                     "expectedControlType": "Button",
@@ -226,22 +226,33 @@
                 {
                     "name": "",
                     "id": "cbecdb0d-56d3-4855-be3b-f8c43e10ff73",
-                    "path": "<Keyboard>/rightBracket",
+                    "path": "<Keyboard>/leftBracket",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Lucky",
+                    "action": "Special",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "660482fd-0f84-42d7-b57f-50d061c984f0",
-                    "path": "<Keyboard>/leftBracket",
+                    "path": "<Keyboard>/rightBracket",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Calamity",
+                    "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "182e40ef-5c64-45ba-b594-1afc5bc30674",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -261,7 +272,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Lucky",
+                    "name": "Use",
                     "type": "Button",
                     "id": "809d4489-9df4-45d9-a3ef-da90f60184ef",
                     "expectedControlType": "Button",
@@ -270,7 +281,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Calamity",
+                    "name": "Special",
                     "type": "Button",
                     "id": "faa8b709-42db-4e67-be32-174c33c81277",
                     "expectedControlType": "Button",
@@ -364,7 +375,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Lucky",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -375,7 +386,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Calamity",
+                    "action": "Special",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

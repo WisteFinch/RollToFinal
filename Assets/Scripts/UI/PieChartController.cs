@@ -153,6 +153,10 @@ namespace RollToFinal
             CalcRateCount(ref Divides, ref DividesRatioCount);
         }
 
+        /// <summary>
+        /// 清除垃圾项
+        /// </summary>
+        /// <param name="divides">划分</param>
         public void CleanRubbishItem(ref List<DrawPieChart.DivideItem> divides)
         {
             for(int i = divides.Count - 1; i >= 0; i--)
