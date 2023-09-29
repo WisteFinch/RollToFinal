@@ -8,9 +8,14 @@ namespace RollToFinal
     {
         [HideInInspector]
         public enum BlockType{
-            Normal
+            Normal,
+            Barrier,
+            Raffle,
+            Trap,
+            Empty
         };
 
         public BlockType Type;
+
     }
 }

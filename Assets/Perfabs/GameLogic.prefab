@@ -1,0 +1,253 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5910125592733533217
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1753140166682978426}
+  - component: {fileID: 1852612993956569192}
+  m_Layer: 0
+  m_Name: OpeningDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1753140166682978426
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910125592733533217}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 199933105269773436}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!320 &1852612993956569192
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910125592733533217}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -2868764509071572280, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 8648776654207800092, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2609159036398811395, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 875439737009666416, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 6834632372786220371, guid: d85ba99f07de9f64fa498f4495183696, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References:
+    - 20e2d7f033b1dfa41b83106c14643944: {fileID: 0}
+    - 7e78f4e8379663a4e80392a2cb24312b: {fileID: 0}
+    - e8b852a663462a9459f4219be542cad1: {fileID: 0}
+    - e0a772e73fa37e342bbf4c9d991f2719: {fileID: 0}
+    - ad18720508c78064a910bf1178348ff5: {fileID: 0}
+--- !u!1 &7061601659194721712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 199933105269773436}
+  - component: {fileID: 673484376557934374}
+  m_Layer: 0
+  m_Name: GameLogic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &199933105269773436
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7061601659194721712}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.018993, y: -22.559048, z: -3.744305}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1753140166682978426}
+  - {fileID: 7987494161578976397}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &673484376557934374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7061601659194721712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08cb158a44f2d3148b12660ea1a02cbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Length: 50
+  Platform1: {fileID: 0}
+  Platform2: {fileID: 0}
+  Player1: {fileID: 0}
+  Player2: {fileID: 0}
+  Player1PieChart: {fileID: 0}
+  Player2PieChart: {fileID: 0}
+  BeginBlock: {fileID: 7362363394570901005, guid: 0c8f5246745d6d649861ee7e72d7e536,
+    type: 3}
+  EndBlock: {fileID: 7362363394570901005, guid: f5f5cd4b5859d69459bcf1a1101631c8,
+    type: 3}
+  Player1Camera: {fileID: 0}
+  Player2Camera: {fileID: 0}
+  OverallCamera: {fileID: 0}
+  PlayerMiddleViewCamera: {fileID: 0}
+  Input: {fileID: 0}
+  PlatformGenerateTable:
+  - Block: {fileID: 7362363394570901005, guid: d2ef8b943b92a184184ef06ef6137f0e, type: 3}
+    Odds: 10
+  - Block: {fileID: 7362363394570901005, guid: 41cee7d9dd8c9bb4aaac811c0394607f, type: 3}
+    Odds: 1
+  - Block: {fileID: 7362363394570901005, guid: c9d6dccefa11f8747b64c3c46f916604, type: 3}
+    Odds: 1
+  RollOptionsList:
+  - Title: 1
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 2
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 3
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 4
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 5
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 6
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 7
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  - Title: 8
+    Description: 
+    Effects:
+    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
+      Title: "\u79FB\u52A8"
+      Description: 
+  SpecialOptionsList:
+  - Title: 1
+    Description: 
+    Effects: []
+  EventOptionsList: []
+  TrapOptionsList: []
+  OpeningDirector: {fileID: 1852612993956569192}
+  RollingDirector: {fileID: 4739342974202581508}
+  UITitle: {fileID: 0}
+  UIDescription: {fileID: 0}
+  UIPlayer1Progess: {fileID: 0}
+  UIPlayer2Progess: {fileID: 0}
+  CurrentGameState: 0
+  CurrentPlayer: 1
+  PlatformBlocks1: []
+  PlatformBlocks2: []
+  Player1Progress: 0
+  Player2Progress: 0
+--- !u!1 &7520866617332777310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7987494161578976397}
+  - component: {fileID: 4739342974202581508}
+  m_Layer: 0
+  m_Name: RollingDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7987494161578976397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520866617332777310}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 199933105269773436}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!320 &4739342974202581508
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520866617332777310}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 59e94453232795f42b7e1a22352f9805, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -5247076020333443081, guid: 59e94453232795f42b7e1a22352f9805, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References: []

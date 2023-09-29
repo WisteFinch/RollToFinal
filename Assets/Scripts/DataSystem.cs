@@ -23,7 +23,7 @@ namespace RollToFinal
         /// <summary>
         /// 数据
         /// </summary>
-        private Dictionary<string, float> Data = new();
+        private Dictionary<string, object> Data = new();
 
         private void Awake()
         {
@@ -49,7 +49,7 @@ namespace RollToFinal
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>值</returns>
-        public float GetData(string key)
+        public object GetData(string key)
         {
             if(Data.ContainsKey(key))
                 return Data[key];
@@ -62,7 +62,7 @@ namespace RollToFinal
         /// </summary>
         /// <param name="key">键</param>
         /// <param name="value">值</param>
-        public void SetData(string key, float value)
+        public void SetData(string key, object value)
         {
             Data[key] = value;
         }

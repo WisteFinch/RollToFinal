@@ -12,15 +12,27 @@ RTF是一款双人回合制类大富翁游戏，玩家靠骰子的使用来前�
 
 ```mermaid
 flowchart TD
-    A[回合开始] --> B{是否扔二号骰}
-    B -->|是| C[判定骰子大小及是否天使恶魔]
-    C -->D[执行效果]
-    D -->F[扔一号骰]
-    F -->G[播放骰子动画]
-    G -->H[根据走到的地块判定效果]
-    B -->|否|F
-    H -->I[视角给另一玩家]
-    I -->A
+	OPENING[开场] --> START[开始]
+	START --> D_START[委托-开始]
+	D_START --> SPECIAL{是否扔二号骰}
+	SPECIAL --> |是| S_A[播放骰子动画]
+	S_A --> S_JDG[判定骰子大小及是否天使恶魔]
+	S_JDG --> S_SHOW[显示结果]
+	S_SHOW --> S_EFF[执行效果]
+	S_EFF --> ROLL[扔一号骰]
+    SPECIAL -->|否|ROLL
+    ROLL --> ROLL_A[播放骰子动画]
+    ROLL_A --> MOVE[播放移动动画]
+    MOVE --> BARRIER[障碍物判定]
+    BARRIER --> ENDLINE{是否到达终点}
+    ENDLINE --> |是| END[结束]
+    ENDLINE --> |否| EV_JDG[方块事件]
+    EV_JDG --> |是| EV_EFF[方块效果]
+    EV_JDG --> |否| D_END[委托-结束]
+    EV_EFF --> D_END
+    D_END --> SWITCH[切换玩家]
+    SWITCH --> D_CLEAN[委托-清除失效效果]
+    D_CLEAN --> START
 ```
 
 ### 障碍

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5663436890754719292}
   m_Layer: 0
   m_Name: Raffle
-  m_TagString: Untagged
+  m_TagString: Raffle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7362363394570901005}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019158bb96b4b5a4e84dc6c4b032b84d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 2
 --- !u!65 &5663436890754719292
 BoxCollider:
   m_ObjectHideFlags: 0

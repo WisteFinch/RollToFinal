@@ -9,6 +9,27 @@ namespace RollToFinal
 {
     public class GameLogic : MonoBehaviour
     {
+        #region 单例
+        /// <summary>
+        /// 获取单例
+        /// </summary>
+        public static GameLogic Instance { get; private set; }
+
+        private void Awake()
+        {
+            // 创建单例
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// 平台生成项
         /// </summary>
@@ -20,6 +41,28 @@ namespace RollToFinal
         }
 
         /// <summary>
+        /// 效果
+        /// </summary>
+        [Serializable]
+        public struct EffectItem
+        {
+            public GameObject Obj;
+            public string Title;
+            public string Description;
+        }
+
+        /// <summary>
+        /// 选项
+        /// </summary>
+        [Serializable]
+        public struct OptionItem
+        {
+            public string Title;
+            public string Description;
+            public List<EffectItem> Effects;
+        }
+
+        /// <summary>
         /// 游戏状态
         /// </summary>
         public enum GameState
@@ -27,11 +70,19 @@ namespace RollToFinal
             /// <summary>
             /// 游戏开始
             /// </summary>
-            Start,
+            GameStart,
             /// <summary>
             /// 开场
             /// </summary>
             Opening,
+            /// <summary>
+            /// 玩家开始
+            /// </summary>
+            PlayerStart,
+            /// <summary>
+            /// 委托：回合开始
+            /// </summary>
+            DelegateStart,
             /// <summary>
             /// 玩家闲置
             /// </summary>
@@ -45,17 +96,33 @@ namespace RollToFinal
             /// </summary>
             Moving,
             /// <summary>
-            /// 事件
+            /// 掷特殊骰子
             /// </summary>
-            Event,
+            SpecialRolling,
             /// <summary>
-            /// 事件效果
+            /// 特殊骰子效果
             /// </summary>
-            EventEffect,
+            SpecialEffect,
+            /// <summary>
+            /// 方块效果
+            /// </summary>
+            BlockEffect,
+            /// <summary>
+            /// 委托：回合结束
+            /// </summary>
+            DelegateEnd,
             /// <summary>
             /// 切换玩家
             /// </summary>
             SwitchPlayer,
+            /// <summary>
+            /// 委托：清除失效效果
+            /// </summary>
+            DelegateLC,
+            /// <summary>
+            /// 胜利
+            /// </summary>
+            Win
         }
 
         [Header("游戏参数")]
@@ -82,6 +149,16 @@ namespace RollToFinal
         /// 玩家2
         /// </summary>
         public GameObject Player2;
+
+        /// <summary>
+        /// 玩家1饼图
+        /// </summary>
+        public PieChartController Player1PieChart;
+
+        /// <summary>
+        /// 玩家2饼图
+        /// </summary>
+        public PieChartController Player2PieChart;
 
         /// <summary>
         /// 起始方块
@@ -124,7 +201,27 @@ namespace RollToFinal
         /// </summary>
         public List<PlatformGenerateItem> PlatformGenerateTable;
 
-        
+        /// <summary>
+        /// 掷骰子选项列表
+        /// </summary>
+        public List<OptionItem> RollOptionsList;
+
+        /// <summary>
+        /// 掷特殊骰子选项列表
+        /// </summary>
+        public List<OptionItem> SpecialOptionsList;
+
+        /// <summary>
+        /// 事件方块选项列表
+        /// </summary>
+        public List<OptionItem> EventOptionsList;
+
+        /// <summary>
+        /// 陷阱方块选项列表
+        /// </summary>
+        public List <OptionItem> TrapOptionsList;
+
+
         [Header("时间轴")]
         /// <summary>
         /// 开场时间轴
@@ -138,16 +235,32 @@ namespace RollToFinal
 
         [Header("GUI")]
         /// <summary>
-        /// 掷骰子结果
+        /// 标题
         /// </summary>
-        public Text RollResult;
+        public Text UITitle;
+
+        /// <summary>
+        /// 介绍
+        /// </summary>
+        public Text UIDescription;
+
+        /// <summary>
+        /// 玩家1进度
+        /// </summary>
+        public Text UIPlayer1Progess;
+
+        /// <summary>
+        /// 玩家2进度
+        /// </summary>
+        public Text UIPlayer2Progess;
+
 
         [Header("运行数据")]
 
         /// <summary>
         /// 当前游戏状态
         /// </summary>
-        public GameState CurrentGameState = GameState.Start;
+        public GameState CurrentGameState = GameState.GameStart;
 
         /// <summary>
         /// 当前玩家
@@ -181,6 +294,46 @@ namespace RollToFinal
         /// </summary>
         private List<float> Player2Odds;
 
+        /// <summary>
+        /// 特殊骰子概率列表
+        /// </summary>
+        private List<float> Specialodds = new() { 16f, 16f, 16f, 16f, 16f, 16f, 2f, 2f };
+
+        /// <summary>
+        /// 回合开始委托
+        /// </summary>
+        private IEffectBase.TurnStartCallBack TurnStartCallBack;
+
+        /// <summary>
+        /// 回合结束委托
+        /// </summary>
+        private IEffectBase.TurnEndCallBack TurnEndCallBack;
+
+        /// <summary>
+        /// 清除失效效果委托
+        /// </summary>
+        private IEffectBase.LifeCycleCallBack LifeCycleCallBack;
+
+        /// <summary>
+        /// 启用状态检查
+        /// </summary>
+        private bool EnableStateCheck = false;
+
+        /// <summary>
+        /// 状态占用
+        /// </summary>
+        private int StateBlock = 0;
+
+        /// <summary>
+        /// 玩家1进度
+        /// </summary>
+        public int Player1Progress;
+
+        /// <summary>
+        /// 玩家2进度
+        /// </summary>
+        public int Player2Progress;
+
         private void Start()
         {
             GeneratePlatform();
@@ -202,6 +355,11 @@ namespace RollToFinal
             {
                 Destroy(item);
             }
+        }
+
+        private void Update()
+        {
+            StateCheck();
         }
 
         #region 平台
@@ -299,37 +457,151 @@ namespace RollToFinal
         {
             switch (CurrentGameState)
             {
-                case GameState.Start:
+                case GameState.GameStart:
                     CurrentGameState = GameState.Opening;
+                    Player1Progress = 0;
+                    Player2Progress = 0;
+                    UpdateProgress();
                     PlayAndInvoke(OpeningDirector);
                     break;
-                // 开场运镜
+                // 开场运镜 -> 玩家开始
                 case GameState.Opening:
-                    SwitchPlayer(1);
+                    CurrentGameState = GameState.PlayerStart;
+                    EnableStateCheck = true;
+                    break;
+                // 玩家开始 -> 委托：回合开始
+                case GameState.PlayerStart:
+                    CurrentGameState = GameState.DelegateStart;
+                    TurnStartCallBack?.Invoke();
+                    EnableStateCheck = true;
+                    break;
+                // 委托：回合开始 -> 玩家闲置
+                case GameState.DelegateStart:
                     CurrentGameState = GameState.PlayerIdle;
                     break;
-                // 掷骰子
+                // 掷骰子 -> 移动
                 case GameState.Rolling:
+                    var rollPerfab = RollOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[0].Obj;
+                    var rollStep = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
-                        var pos = Player1.transform.position;
-                        pos.z += DataSystem.Instance.GetData("MoveStep");
-                        Player1.transform.position = pos;
-                        SwitchPlayer(2);
+                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, rollStep);
                     }
                     else
                     {
-                        var pos = Player2.transform.position;
-                        pos.z += DataSystem.Instance.GetData("MoveStep");
-                        Player2.transform.position = pos;
-                        SwitchPlayer(1);
+                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, rollStep);
                     }
+                    CurrentGameState = GameState.Moving;
+                    EnableStateCheck = true;
+                    break;
+                // 移动 -> 委托：回合结束 | 方块效果
+                case GameState.Moving:
+                    if((CurrentPlayer == 1 ? PlatformBlocks1[Player1Progress].GetComponent<Block>().Type : PlatformBlocks2[Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Raffle)
+                    {
+                        CurrentGameState = GameState.BlockEffect;
+                        var rand = UnityEngine.Random.Range(0, EventOptionsList.Count);
+                        var effects = EventOptionsList[rand].Effects;
+                        var index = UnityEngine.Random.Range(0, effects.Count);
+                        var perfab = effects[index].Obj;
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
+                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
+                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].Title}";
+                        UIDescription.text = effects[index].Description;
+                        PlayAndInvoke(RollingDirector);
+                    }
+                    else if ((CurrentPlayer == 1 ? PlatformBlocks1[Player1Progress].GetComponent<Block>().Type : PlatformBlocks2[Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Trap)
+                    {
+                        CurrentGameState = GameState.BlockEffect;
+                        var rand = UnityEngine.Random.Range(0, TrapOptionsList.Count);
+                        var effects = EventOptionsList[rand].Effects;
+                        var index = UnityEngine.Random.Range(0, effects.Count);
+                        var perfab = effects[index].Obj;
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
+                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
+                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].Title}";
+                        UIDescription.text = effects[index].Description;
+                        PlayAndInvoke(RollingDirector);
+                    }
+                    else
+                    {
+                        CurrentGameState = GameState.DelegateEnd;
+                        TurnEndCallBack?.Invoke();
+                        EnableStateCheck = true;
+                    }
+                    break;
+                // 方块效果 --> 委托：回合结束
+                case GameState.BlockEffect:
+                    CurrentGameState = GameState.DelegateEnd;
+                    TurnEndCallBack?.Invoke();
+                    EnableStateCheck = true;
+                    break;
+                // 委托：回合结束 -> 切换玩家
+                case GameState.DelegateEnd:
+                    CurrentGameState = GameState.SwitchPlayer;
+                    SwitchPlayer(CurrentPlayer == 1 ? 2 : 1);
+                    EnableStateCheck = true;
+                    break;
+                // 切换玩家 -> 委托：清除失效效果
+                case GameState.SwitchPlayer:
+                    CurrentGameState = GameState.DelegateLC;
+                    LifeCycleCallBack?.Invoke();
+                    EnableStateCheck = true;
+                    break;
+                // 委托：清除失效效果 -> 玩家开始
+                case GameState.DelegateLC:
+                    CurrentGameState = GameState.PlayerStart;
+                    EnableStateCheck = true;
+                    break;
+                // 特殊骰子 -> 特殊骰子效果
+                case GameState.SpecialRolling:
+                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[(int)DataSystem.Instance.GetData("EffectIndex")].Obj;
+                    var specialData = (int)DataSystem.Instance.GetData("RollResult");
+                    if (CurrentPlayer == 1)
+                    {
+                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, specialData);
+                    }
+                    else
+                    {
+                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, specialData);
+                    }
+                    CurrentGameState = GameState.SpecialEffect;
+                    EnableStateCheck = true;
+                    break;
+                // 特殊骰子效果 -> 玩家闲置:
+                case GameState.SpecialEffect:
                     CurrentGameState = GameState.PlayerIdle;
+                    EnableStateCheck = true;
                     break;
             }
         }
-        #endregion
 
+        private void StateCheck()
+        {
+            if (!EnableStateCheck)
+                return;
+            if(StateBlock <= 0)
+            {
+                StateBlock = 0;
+                EnableStateCheck = false;
+                OnChangeState();
+            }
+        }
+
+        public void Win()
+        {
+            CurrentGameState = GameState.Win;
+            UITitle.text = $"Player {CurrentPlayer} Win!";
+            PlayAndInvoke(RollingDirector);
+        }
+        #endregion
 
         #region 玩家
 
@@ -351,6 +623,12 @@ namespace RollToFinal
             }
         }
 
+        public void UpdateProgress()
+        {
+            UIPlayer1Progess.text = Player1Progress.ToString();
+            UIPlayer2Progess.text = Player2Progress.ToString();
+        }
+
         #endregion
 
         #region 掷骰子
@@ -363,10 +641,42 @@ namespace RollToFinal
         {
             if(player == 1)
             {
-                Player1Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, 0f, 0f };
+                Player1Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f};
+                SyncPieChart(1);
             } else if(player == 2)
             {
-                Player2Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f, 0f, 0f };
+                Player2Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f};
+                SyncPieChart(2);
+            }
+        }
+
+        /// <summary>
+        /// 同步饼图
+        /// </summary>
+        /// <param name="player">玩家序号</param>
+        private void SyncPieChart(int player = 0)
+        {
+            if(player == 0 || player == 1)
+            {
+
+                for(int i = 0; i < Player1Odds.Count; i++)
+                {
+                    var div = Player1PieChart.Divides[i];
+                    div.ratio = Player1Odds[i];
+                    Player1PieChart.Divides[i] = div;
+                }
+                Player1PieChart.OnValueChanged();
+            } 
+            if (player == 0 || player == 2)
+            {
+
+                for (int i = 0; i < Player1Odds.Count; i++)
+                {
+                    var div = Player2PieChart.Divides[i];
+                    div.ratio = Player2Odds[i];
+                    Player2PieChart.Divides[i] = div;
+                }
+                Player2PieChart.OnValueChanged();
             }
         }
 
@@ -395,8 +705,27 @@ namespace RollToFinal
             {
                 CurrentGameState = GameState.Rolling;
                 int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
-                RollResult.text = res.ToString();
-                DataSystem.Instance.SetData("MoveStep", res);
+                UITitle.text = RollOptionsList[res - 1].Title;
+                UIDescription.text = RollOptionsList[res - 1].Description;
+                DataSystem.Instance.SetData("RollResult", res);
+                PlayAndInvoke(RollingDirector);
+            }
+        }
+
+        /// <summary>
+        /// 玩家掷特殊骰子
+        /// </summary>
+        public void PlayerSpecialRoll(int player)
+        {
+            if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
+            {
+                CurrentGameState = GameState.SpecialRolling;
+                int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
+                var index = UnityEngine.Random.Range(0, SpecialOptionsList[res].Effects.Count);
+                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res].Effects[index].Title}";
+                UIDescription.text = SpecialOptionsList[res].Effects[index].Description;
+                DataSystem.Instance.SetData("RollResult", res);
+                DataSystem.Instance.SetData("EffectIndex", index);
                 PlayAndInvoke(RollingDirector);
             }
         }
