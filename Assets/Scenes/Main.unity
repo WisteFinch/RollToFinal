@@ -2424,6 +2424,23 @@ PrefabInstance:
       propertyPath: PlayerMiddleViewCamera
       value: 
       objectReference: {fileID: 358456339}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: RollOptionsList.Array.data[2].Effects.Array.data[1]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b,
+        type: 3}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: RollOptionsList.Array.data[3].Effects.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: RollOptionsList.Array.data[4].Effects.Array.data[1]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b,
+        type: 3}
     - target: {fileID: 1852612993956569192, guid: 147efd5d1ccfcd243975ded238a6958a,
         type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value

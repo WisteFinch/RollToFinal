@@ -41,17 +41,6 @@ namespace RollToFinal
         }
 
         /// <summary>
-        /// 效果
-        /// </summary>
-        [Serializable]
-        public struct EffectItem
-        {
-            public GameObject Obj;
-            public string Title;
-            public string Description;
-        }
-
-        /// <summary>
         /// 选项
         /// </summary>
         [Serializable]
@@ -59,7 +48,7 @@ namespace RollToFinal
         {
             public string Title;
             public string Description;
-            public List<EffectItem> Effects;
+            public List<GameObject> Effects;
         }
 
         /// <summary>
@@ -302,17 +291,17 @@ namespace RollToFinal
         /// <summary>
         /// 回合开始委托
         /// </summary>
-        private IEffectBase.TurnStartCallBack TurnStartCallBack;
+        private IEffectBase.TurnStartCallBack TurnStartCallBack = null;
 
         /// <summary>
         /// 回合结束委托
         /// </summary>
-        private IEffectBase.TurnEndCallBack TurnEndCallBack;
+        private IEffectBase.TurnEndCallBack TurnEndCallBack = null;
 
         /// <summary>
         /// 清除失效效果委托
         /// </summary>
-        private IEffectBase.LifeCycleCallBack LifeCycleCallBack;
+        private IEffectBase.LifeCycleCallBack LifeCycleCallBack = null;
 
         /// <summary>
         /// 启用状态检查
@@ -462,6 +451,8 @@ namespace RollToFinal
                     Player1Progress = 0;
                     Player2Progress = 0;
                     UpdateProgress();
+                    DataSystem.Instance.SetData("Player1Step", 1);
+                    DataSystem.Instance.SetData("Player2Step", 1);
                     PlayAndInvoke(OpeningDirector);
                     break;
                 // 开场运镜 -> 玩家开始
@@ -481,7 +472,7 @@ namespace RollToFinal
                     break;
                 // 掷骰子 -> 移动
                 case GameState.Rolling:
-                    var rollPerfab = RollOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[0].Obj;
+                    var rollPerfab = RollOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[0];
                     var rollStep = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
@@ -504,12 +495,12 @@ namespace RollToFinal
                         var rand = UnityEngine.Random.Range(0, EventOptionsList.Count);
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
-                        var perfab = effects[index].Obj;
+                        var perfab = effects[index];
                         var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
-                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].Title}";
-                        UIDescription.text = effects[index].Description;
+                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
+                        UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
                     }
                     else if ((CurrentPlayer == 1 ? PlatformBlocks1[Player1Progress].GetComponent<Block>().Type : PlatformBlocks2[Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Trap)
@@ -518,12 +509,12 @@ namespace RollToFinal
                         var rand = UnityEngine.Random.Range(0, TrapOptionsList.Count);
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
-                        var perfab = effects[index].Obj;
+                        var perfab = effects[index];
                         var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
-                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].Title}";
-                        UIDescription.text = effects[index].Description;
+                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
+                        UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
                     }
                     else
@@ -558,7 +549,7 @@ namespace RollToFinal
                     break;
                 // 特殊骰子 -> 特殊骰子效果
                 case GameState.SpecialRolling:
-                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[(int)DataSystem.Instance.GetData("EffectIndex")].Obj;
+                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
                     var specialData = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
@@ -722,8 +713,8 @@ namespace RollToFinal
                 CurrentGameState = GameState.SpecialRolling;
                 int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
                 var index = UnityEngine.Random.Range(0, SpecialOptionsList[res].Effects.Count);
-                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res].Effects[index].Title}";
-                UIDescription.text = SpecialOptionsList[res].Effects[index].Description;
+                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res].Effects[index].GetComponent<IEffectBase>().Name}";
+                UIDescription.text = SpecialOptionsList[res].Effects[index].GetComponent<IEffectBase>().Description;
                 DataSystem.Instance.SetData("RollResult", res);
                 DataSystem.Instance.SetData("EffectIndex", index);
                 PlayAndInvoke(RollingDirector);

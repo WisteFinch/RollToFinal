@@ -31,5 +31,15 @@ namespace RollToFinal
         /// <param name="player">玩家实例</param>
         /// <param name="data">数据</param>
         void OnInstantiated(GameObject player, object data = null);
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// 介绍
+        /// </summary>
+        public string Description { get; }
     }
 }

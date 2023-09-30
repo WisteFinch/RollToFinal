@@ -6,62 +6,63 @@ namespace RollToFinal
 {
     public class EffectMove : MonoBehaviour, IEffectBase
     {
+        public string Name { get => "移动"; }
+        public string Description { get => ""; }
+
         public void OnInstantiated(GameObject player, object data)
         {
-            var pos = player.transform.position;
+            Vector3 pos = player.transform.position;
             int step = (int)data;
             var instance = GameLogic.Instance;
-            var currentPlayer = instance.CurrentPlayer;
-            // 判断胜利
-            if((currentPlayer == 1 ? instance.Player1Progress + step : instance.Player2Progress + step) >= instance.Length + 1)
-            {
-                instance.Win();
-                return;
-            }
-            // 判断障碍
+            int currentPlayer = instance.CurrentPlayer;
+            int stepSize = currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Step") : (int)DataSystem.Instance.GetData("Player2Step");
+            int progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
+            var platform = currentPlayer == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
+
+            // 判断方块
             while (step > 0)
             {
-                if(currentPlayer == 1)
+                Block.BlockType type = platform[progress + stepSize].GetComponent<Block>().Type;
+                if (type == Block.BlockType.Barrier && platform[progress].GetComponent<Block>().Type != Block.BlockType.Barrier)
                 {
-                    if(instance.PlatformBlocks1[instance.Player1Progress + 1].GetComponent<Block>().Type == Block.BlockType.Barrier)
+                    if (step >= 3)
                     {
-                        if (step >= 3)
-                        {
-                            instance.Player1Progress++;
-                        }
-                        step -= 3;
+                        progress += stepSize;
                     }
-                    else
-                    {
-                        step--;
-                        instance.Player1Progress++;
-                    }
-                        
-                }else
+                    step -= 3;
+                }
+                else if (type == Block.BlockType.EndLine)
                 {
-                    if (instance.PlatformBlocks2[instance.Player2Progress + 1].GetComponent<Block>().Type == Block.BlockType.Barrier)
-                    {
-                        if (step >= 3)
-                        {
-                            instance.Player2Progress++;
-                        }
-                        step -= 3;
-                    }
-                    else
-                    {
-                        step--;
-                        instance.Player2Progress++;
-                    }
-
+                    progress += stepSize;
+                    instance.Win();
+                    break;
+                }
+                else if (type == Block.BlockType.Start)
+                {
+                    progress += stepSize;
+                    break;
+                }
+                else
+                {
+                    step--;
+                    progress += stepSize;
                 }
             }
             // 判断落脚
-            if ((currentPlayer == 1 ? instance.PlatformBlocks1[instance.Player1Progress].GetComponent<Block>().Type : instance.PlatformBlocks2[instance.Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Barrier)
+            if (platform[progress].GetComponent<Block>().Type == Block.BlockType.Barrier)
                 pos.y = 3;
             else
                 pos.y = 0;
-            pos.z = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
+            if (platform[progress].GetComponent<Block>().Type == Block.BlockType.Empty)
+            {
+                progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
+            }
 
+            pos.z = progress;
+            if(currentPlayer == 1)
+                instance.Player1Progress = progress;
+            else
+                instance.Player2Progress = progress;
             player.transform.position = pos;
             instance.UpdateProgress();
             Destroy(this.gameObject);

@@ -12,7 +12,9 @@ namespace RollToFinal
             Barrier,
             Raffle,
             Trap,
-            Empty
+            Empty,
+            EndLine,
+            Start
         };
 
         public BlockType Type;

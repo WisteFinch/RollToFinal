@@ -137,51 +137,35 @@ MonoBehaviour:
   - Title: 1
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 2
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 3
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 4
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 5
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 6
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 7
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   - Title: 8
     Description: 
     Effects:
-    - Obj: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
-      Title: "\u79FB\u52A8"
-      Description: 
+    - {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b, type: 3}
   SpecialOptionsList:
   - Title: 1
     Description: 
