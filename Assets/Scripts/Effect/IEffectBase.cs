@@ -9,17 +9,17 @@ namespace RollToFinal
         /// <summary>
         /// 回合开始委托
         /// </summary>
-        delegate void TurnStartCallBack();
+        public delegate void TurnStartCallBack();
 
         /// <summary>
         /// 回合结束委托
         /// </summary>
-        delegate void TurnEndCallBack();
+        public delegate void TurnEndCallBack();
 
         /// <summary>
         /// 生命周期检测委托
         /// </summary>
-        delegate void LifeCycleCallBack();
+        public delegate void LifeCycleCallBack();
         /// <summary>
         /// 注册委托
         /// </summary>
@@ -30,7 +30,7 @@ namespace RollToFinal
         /// </summary>
         /// <param name="player">玩家实例</param>
         /// <param name="data">数据</param>
-        public void OnInstantiated(GameObject player, object data = null);
+        public void OnInstantiated(GameObject player, object[] data = null);
 
         /// <summary>
         /// 失效时调用

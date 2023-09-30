@@ -1,6 +1,3 @@
-using RollToFinal;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RollToFinal
@@ -14,17 +11,10 @@ namespace RollToFinal
 
         public int TargetPlayer = 0;
 
-        public void OnInstantiated(GameObject player, object data)
+        void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
-            int rollResult = (int)data;
-            if(rollResult >3)
-            {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1;
-            }
-            else
-            {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2;
-            }
+            int rollResult = (int)data[0];
+            TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1) : (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2);
             if(TargetPlayer == 1)
             {
                 DataSystem.Instance.SetData("Player1Reverse", (int)DataSystem.Instance.GetData("Player1Reverse") + 1);
@@ -46,12 +36,12 @@ namespace RollToFinal
             LifeCycle++;
             if(LifeCycle >= 4)
             {
-                OnLapsed();
+                ((IEffectBase)this).OnLapsed();
             }
                 
         }
 
-        public void OnLapsed()
+        void IEffectBase.OnLapsed()
         {
             if (TargetPlayer == 1)
             {
@@ -61,7 +51,7 @@ namespace RollToFinal
             {
                 DataSystem.Instance.SetData("Player2Reverse", (int)DataSystem.Instance.GetData("Player2Reverse") - 1);
             }
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 }

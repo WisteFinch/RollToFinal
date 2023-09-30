@@ -205,27 +205,37 @@ MonoBehaviour:
     - {fileID: 7835100483934819122, guid: 5175b4ab3bbfe4e4bbe81033118db4db, type: 3}
     - {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088, type: 3}
     - {fileID: 7835100483934819122, guid: 3377754ae8bb1194894822a247e1b9cc, type: 3}
+    - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
   - Title: 2
     Description: 
-    Effects: []
+    Effects:
+    - {fileID: 7835100483934819122, guid: ef50030fdb3e6d749a20f436e34cc76e, type: 3}
+    - {fileID: 7835100483934819122, guid: c7908ad1891f3a14cbb90179c0a8b733, type: 3}
   - Title: 3
     Description: 
-    Effects: []
+    Effects:
+    - {fileID: 7835100483934819122, guid: 13bc3ade579d35742969b2a47b1c28b7, type: 3}
+    - {fileID: 7835100483934819122, guid: 56fb644ac28b21e4abc65d459359e74c, type: 3}
   - Title: 4
     Description: 
-    Effects: []
+    Effects:
+    - {fileID: 7835100483934819122, guid: 13bc3ade579d35742969b2a47b1c28b7, type: 3}
+    - {fileID: 7835100483934819122, guid: 56fb644ac28b21e4abc65d459359e74c, type: 3}
   - Title: 5
     Description: 
-    Effects: []
+    Effects:
+    - {fileID: 7835100483934819122, guid: ef50030fdb3e6d749a20f436e34cc76e, type: 3}
+    - {fileID: 7835100483934819122, guid: c7908ad1891f3a14cbb90179c0a8b733, type: 3}
   - Title: 6
     Description: 
     Effects:
     - {fileID: 7835100483934819122, guid: 5175b4ab3bbfe4e4bbe81033118db4db, type: 3}
     - {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088, type: 3}
     - {fileID: 7835100483934819122, guid: 3377754ae8bb1194894822a247e1b9cc, type: 3}
+    - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
   EventOptionsList: []
   TrapOptionsList: []
-  Effects: {fileID: 0}
+  Effects: {fileID: 2718564955195390143}
   OpeningDirector: {fileID: 1852612993956569192}
   RollingDirector: {fileID: 4739342974202581508}
   UITitle: {fileID: 0}
@@ -239,9 +249,11 @@ MonoBehaviour:
   Player1Odds: []
   Player1OddsDelta: []
   Player1OddsLevel: 2
+  Player1OddsLevelDelta: 0
   Player2Odds: []
   Player2OddsDelta: []
   Player2OddsLevel: 2
+  Player2OddsLevelDelta: 0
   Player1Progress: 0
   Player2Progress: 0
 --- !u!1 &7520866617332777310

@@ -1,67 +1,51 @@
-using RollToFinal;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RollToFinal
 {
-    public class EffectLockOddsTo6 : MonoBehaviour, IEffectBase
+    public class EffectLimitOddsMaxTo4 : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "锁定点数为6"; }
+        public string Name { get => "降低骰子上限至4"; }
         public string Description { get => ""; }
 
         public int LifeCycle = 0;
 
         public int TargetPlayer = 0;
 
-        public void OnInstantiated(GameObject player, object data)
+        void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
-            int rollResult = (int)data;
+            int rollResult = (int)data[0];
             // 确认目标
-            if (rollResult > 3)
-            {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1;
-            }
-            else
-            {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2;
-            }
+            TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1) : (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2);
             // 使冲突效果失效
-            var effect1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectLockOddsTo6>();
-            foreach(var e in effect1)
+            var effects1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectLimitOddsMaxTo4>();
+            foreach(var e in effects1)
             {
                 if(e.TargetPlayer == TargetPlayer)
                 {
-                    e.OnLapsed();
+                    ((IEffectBase)e).OnLapsed();
                 }
             }
-            var effect2 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectLimitOddsMaxTo4>();
-            foreach (var e in effect2)
+            var effects2 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectRiseOddsLevelTo6>();
+            foreach (var e in effects2)
             {
                 if (e.TargetPlayer == TargetPlayer)
                 {
-                    e.OnLapsed();
+                    ((IEffectBase)e).OnLapsed();
                 }
             }
             // 产生效果
             if (TargetPlayer == 1)
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
-                for (int i = 0; i < 5; i++)
+                for (int i = 4; i < delta.Count; i++)
                     delta[i] -= 100f;
-                for (int i = 6; i < delta.Count; i++)
-                    delta[i] -= 100f;
-                delta[5] += 100f;
                 GameLogic.Instance.Player1OddsDelta = delta;
             }
             else
             {
                 var delta = GameLogic.Instance.Player2OddsDelta;
-                for (int i = 0; i < 5; i++)
+                for (int i = 4; i < delta.Count; i++)
                     delta[i] -= 100f;
-                for (int i = 6; i < delta.Count; i++)
-                    delta[i] -= 100f;
-                delta[5] += 100f;
                 GameLogic.Instance.Player2OddsDelta = delta;
             }
         }
@@ -75,35 +59,29 @@ namespace RollToFinal
         private void OnLifeCycleCallBack()
         {
             LifeCycle++;
-            if (LifeCycle >= 2)
+            if (LifeCycle >= 4)
             {
-                OnLapsed();
+                ((IEffectBase)this).OnLapsed();
             }
         }
 
-        public void OnLapsed()
+        void IEffectBase.OnLapsed()
         {
             if (TargetPlayer == 1)
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
-                for (int i = 0; i < 5; i++)
+                for (int i = 4; i < delta.Count; i++)
                     delta[i] += 100f;
-                for (int i = 6; i < delta.Count; i++)
-                    delta[i] += 100f;
-                delta[5] -= 100f;
                 GameLogic.Instance.Player1OddsDelta = delta;
             }
             else
             {
                 var delta = GameLogic.Instance.Player2OddsDelta;
-                for (int i = 0; i < 5; i++)
+                for (int i = 4; i < delta.Count; i++)
                     delta[i] += 100f;
-                for (int i = 6; i < delta.Count; i++)
-                    delta[i] += 100f;
-                delta[5] -= 100f;
                 GameLogic.Instance.Player2OddsDelta = delta;
             }
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 }

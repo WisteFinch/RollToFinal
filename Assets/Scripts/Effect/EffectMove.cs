@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RollToFinal
@@ -9,12 +7,12 @@ namespace RollToFinal
         public string Name { get => "移动"; }
         public string Description { get => ""; }
 
-        public void OnInstantiated(GameObject player, object data)
+        void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
             Vector3 pos = player.transform.position;
-            int step = (int)data;
+            int step = (int)data[0];
             var instance = GameLogic.Instance;
-            int currentPlayer = instance.CurrentPlayer;
+            int currentPlayer = (int)data[1];
             int stepSize = (currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) > 0 ? -1 : 1;
             int progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
             var platform = currentPlayer == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
@@ -65,6 +63,8 @@ namespace RollToFinal
                 instance.Player2Progress = progress;
             player.transform.position = pos;
             instance.UpdateProgress();
+
+            ((IEffectBase)this).OnLapsed();
         }
 
         void IEffectBase.Register(IEffectBase.TurnStartCallBack start, IEffectBase.TurnEndCallBack end, IEffectBase.LifeCycleCallBack lc)

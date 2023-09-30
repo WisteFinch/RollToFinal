@@ -294,6 +294,11 @@ namespace RollToFinal
         public int Player1OddsLevel;
 
         /// <summary>
+        /// 玩家1概率等级变化
+        /// </summary>
+        public int Player1OddsLevelDelta;
+
+        /// <summary>
         /// 玩家2概率列表
         /// </summary>
         public List<float> Player2Odds;
@@ -310,14 +315,19 @@ namespace RollToFinal
         public int Player2OddsLevel;
 
         /// <summary>
+        /// 玩家2概率等级变化
+        /// </summary>
+        public int Player2OddsLevelDelta;
+
+        /// <summary>
         /// 玩家概率对接列表
         /// </summary>
         private List<List<float>> PlayerOddsLevelList = new() { 
-            new List<float>() { 10f, 0f, 0f, 0f, 0f, 0f, 0f, 0f},       // 0级，全1
-            new List<float>() { 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f},    // 1级，4面
-            new List<float>() { 10f, 10f, 10f, 10f, 10f, 10f, 0f, 0f},  // 2级，6面（默认）
-            new List<float>() { 10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f},// 3级，8面
-            new List<float>() { 0f, 0f, 0f, 0f, 0f, 10f, 0f, 0f},       // 4级，全1
+            new List<float>() { 100f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f},  // 0级，全1
+            new List<float>() { 100f, 100f, 100f, 100f, -1000f, -1000f, -1000f, -1000f },       // 1级，4面
+            new List<float>() { 100f, 100f, 100f, 100f, 100f, 100f, -1000f, -1000f},            // 2级，6面（默认）
+            new List<float>() { 100f, 100f, 100f, 100f, 100f, 100f, 100f, 100f },               // 3级，8面
+            new List<float>() { -1000f, -1000f, -1000f, -1000f, -1000f, 100f, -1000f, -1000f},  // 4级，全1
         };
 
         /// <summary>
@@ -384,6 +394,7 @@ namespace RollToFinal
 
         private void OnValidate()
         {
+            //CalcOdds();
         }
 
         private void Update()
@@ -516,13 +527,13 @@ namespace RollToFinal
                     var rollStep = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
-                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, rollStep);
+                        var obj = Instantiate(rollPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, new object[] { rollStep, CurrentPlayer });
                     }
                     else
                     {
-                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, rollStep);
+                        var obj = Instantiate(rollPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, new object[] { rollStep, CurrentPlayer });
                     }
                     CurrentGameState = GameState.Moving;
                     EnableStateCheck = true;
@@ -536,7 +547,7 @@ namespace RollToFinal
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
                         var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
@@ -550,7 +561,7 @@ namespace RollToFinal
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
                         var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
@@ -593,15 +604,15 @@ namespace RollToFinal
                     var specialData = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
-                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(specialPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, specialData);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, new object[] { specialData });
                     }
                     else
                     {
-                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(specialPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, specialData);
+                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, new object[] { specialData });
                     }
                     CurrentGameState = GameState.SpecialEffect;
                     EnableStateCheck = true;
@@ -674,12 +685,14 @@ namespace RollToFinal
             {
                 Player1OddsDelta = new() { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
                 Player1OddsLevel = 2;
+                Player1OddsLevelDelta = 0;
                 CalcOdds(1);
             } 
             if(player == 0 || player == 2)
             {
                 Player2OddsDelta = new() { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
                 Player2OddsLevel = 2;
+                Player2OddsLevelDelta = 0;
                 CalcOdds(2);
             }
         }
@@ -695,7 +708,7 @@ namespace RollToFinal
                 Player1Odds = new();
                 for (int i = 0; i < 8; i++)
                 {
-                    Player1Odds.Add(Mathf.Clamp(Player1OddsDelta[i] + PlayerOddsLevelList[Player1OddsLevel][i], 0f, 1000f));
+                    Player1Odds.Add(Mathf.Clamp(Player1OddsDelta[i] + PlayerOddsLevelList[Math.Clamp(Player1OddsLevel + Player1OddsLevelDelta, 0, 4)][i], 0f, 1000f));
                 }
                 SyncPieChart(1);
             }
@@ -704,7 +717,7 @@ namespace RollToFinal
                 Player2Odds = new();
                 for (int i = 0; i < 8; i++)
                 {
-                    Player2Odds.Add(Mathf.Clamp(Player2OddsDelta[i] + PlayerOddsLevelList[Player2OddsLevel][i], 0f, 1000f));
+                    Player2Odds.Add(Mathf.Clamp(Player2OddsDelta[i] + PlayerOddsLevelList[Math.Clamp(Player2OddsLevel + Player2OddsLevelDelta, 0, 4)][i], 0f, 1000f));
                 }
                 SyncPieChart(2);
             }
@@ -764,7 +777,7 @@ namespace RollToFinal
             if(player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.Rolling;
-                int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
+                int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta"): GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
                 UITitle.text = RollOptionsList[res - 1].Title;
                 UIDescription.text = RollOptionsList[res - 1].Description;
                 DataSystem.Instance.SetData("RollResult", res);
