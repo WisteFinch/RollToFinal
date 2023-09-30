@@ -39,7 +39,6 @@ namespace RollToFinal
             /// <summary>
             /// 比例
             /// </summary>
-            [Range(0, 10)]
             public float ratio;
             /// <summary>
             /// 标题

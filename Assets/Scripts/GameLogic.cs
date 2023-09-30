@@ -184,7 +184,6 @@ namespace RollToFinal
         /// </summary>
         public PlayerInput Input;
 
-
         /// <summary>
         /// 平台生成表
         /// </summary>
@@ -209,6 +208,11 @@ namespace RollToFinal
         /// 陷阱方块选项列表
         /// </summary>
         public List <OptionItem> TrapOptionsList;
+
+        /// <summary>
+        /// 存放效果
+        /// </summary>
+        public GameObject Effects;
 
 
         [Header("时间轴")]
@@ -276,12 +280,45 @@ namespace RollToFinal
         /// <summary>
         /// 玩家1概率列表
         /// </summary>
-        private List<float> Player1Odds;
+        public List<float> Player1Odds;
+
+        /// <summary>
+        /// 玩家1概率变化列表
+        /// </summary>
+        public List<float> Player1OddsDelta;
+
+        /// <summary>
+        /// 玩家1概率等级
+        /// </summary>
+        [Range(0, 4)]
+        public int Player1OddsLevel;
 
         /// <summary>
         /// 玩家2概率列表
         /// </summary>
-        private List<float> Player2Odds;
+        public List<float> Player2Odds;
+
+        /// <summary>
+        /// 玩家2概率变化列表
+        /// </summary>
+        public List<float> Player2OddsDelta;
+
+        /// <summary>
+        /// 玩家2概率等级
+        /// </summary>
+        [Range(0, 4)]
+        public int Player2OddsLevel;
+
+        /// <summary>
+        /// 玩家概率对接列表
+        /// </summary>
+        private List<List<float>> PlayerOddsLevelList = new() { 
+            new List<float>() { 10f, 0f, 0f, 0f, 0f, 0f, 0f, 0f},       // 0级，全1
+            new List<float>() { 10f, 10f, 10f, 10f, 0f, 0f, 0f, 0f},    // 1级，4面
+            new List<float>() { 10f, 10f, 10f, 10f, 10f, 10f, 0f, 0f},  // 2级，6面（默认）
+            new List<float>() { 10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f},// 3级，8面
+            new List<float>() { 0f, 0f, 0f, 0f, 0f, 10f, 0f, 0f},       // 4级，全1
+        };
 
         /// <summary>
         /// 特殊骰子概率列表
@@ -327,8 +364,7 @@ namespace RollToFinal
         {
             GeneratePlatform();
             OnChangeState();
-            ResetOdds(1);
-            ResetOdds(2);
+            ResetOdds();
         }
 
         private void OnDestroy()
@@ -344,6 +380,10 @@ namespace RollToFinal
             {
                 Destroy(item);
             }
+        }
+
+        private void OnValidate()
+        {
         }
 
         private void Update()
@@ -451,8 +491,8 @@ namespace RollToFinal
                     Player1Progress = 0;
                     Player2Progress = 0;
                     UpdateProgress();
-                    DataSystem.Instance.SetData("Player1Step", 1);
-                    DataSystem.Instance.SetData("Player2Step", 1);
+                    DataSystem.Instance.SetData("Player1Reverse", 0);
+                    DataSystem.Instance.SetData("Player2Reverse", 0);
                     PlayAndInvoke(OpeningDirector);
                     break;
                 // 开场运镜 -> 玩家开始
@@ -476,12 +516,12 @@ namespace RollToFinal
                     var rollStep = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
-                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1, rollStep);
                     }
                     else
                     {
-                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        var obj = Instantiate(rollPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player2, rollStep);
                     }
                     CurrentGameState = GameState.Moving;
@@ -496,7 +536,7 @@ namespace RollToFinal
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
                         var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
@@ -510,7 +550,7 @@ namespace RollToFinal
                         var effects = EventOptionsList[rand].Effects;
                         var index = UnityEngine.Random.Range(0, effects.Count);
                         var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, CurrentPlayer == 1 ? Player1.transform : Player2.transform);
+                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Player1.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
@@ -553,13 +593,13 @@ namespace RollToFinal
                     var specialData = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
-                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player1, specialData);
                     }
                     else
                     {
-                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Player1.transform);
+                        var obj = Instantiate(specialPerfab, Player1.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated(Player2, specialData);
                     }
@@ -628,15 +668,44 @@ namespace RollToFinal
         /// 重置概率
         /// </summary>
         /// <param name="player">玩家编号</param>
-        private void ResetOdds(int player)
+        private void ResetOdds(int player = 0)
         {
-            if(player == 1)
+            if(player == 0 || player == 1)
             {
-                Player1Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f};
+                Player1OddsDelta = new() { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+                Player1OddsLevel = 2;
+                CalcOdds(1);
+            } 
+            if(player == 0 || player == 2)
+            {
+                Player2OddsDelta = new() { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
+                Player2OddsLevel = 2;
+                CalcOdds(2);
+            }
+        }
+
+        /// <summary>
+        /// 计算概率列表
+        /// </summary>
+        /// <param name="player">玩家序号</param>
+        public void CalcOdds(int player = 0)
+        {
+            if (player == 0 || player == 1)
+            {
+                Player1Odds = new();
+                for (int i = 0; i < 8; i++)
+                {
+                    Player1Odds.Add(Mathf.Clamp(Player1OddsDelta[i] + PlayerOddsLevelList[Player1OddsLevel][i], 0f, 1000f));
+                }
                 SyncPieChart(1);
-            } else if(player == 2)
+            }
+            if (player == 0 || player == 2)
             {
-                Player2Odds = new() { 1f, 1f, 1f, 1f, 1f, 1f, 0f, 0f};
+                Player2Odds = new();
+                for (int i = 0; i < 8; i++)
+                {
+                    Player2Odds.Add(Mathf.Clamp(Player2OddsDelta[i] + PlayerOddsLevelList[Player2OddsLevel][i], 0f, 1000f));
+                }
                 SyncPieChart(2);
             }
         }

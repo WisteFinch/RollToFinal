@@ -23,14 +23,19 @@ namespace RollToFinal
         /// <summary>
         /// 注册委托
         /// </summary>
-        void Register(TurnStartCallBack start, TurnEndCallBack end, LifeCycleCallBack lc);
+        public void Register(TurnStartCallBack start, TurnEndCallBack end, LifeCycleCallBack lc);
 
         /// <summary>
         /// 实例化时调用
         /// </summary>
         /// <param name="player">玩家实例</param>
         /// <param name="data">数据</param>
-        void OnInstantiated(GameObject player, object data = null);
+        public void OnInstantiated(GameObject player, object data = null);
+
+        /// <summary>
+        /// 失效时调用
+        /// </summary>
+        public void OnLapsed();
 
         /// <summary>
         /// 名称

@@ -14,7 +14,7 @@ namespace RollToFinal
         /// <summary>
         /// 变化率
         /// </summary>
-        public float ChangeRate = 0.05f;
+        public float ChangeRate = 0.01f;
 
         /// <summary>
         /// 划分
@@ -159,11 +159,11 @@ namespace RollToFinal
         /// <param name="divides">划分</param>
         public void CleanRubbishItem(ref List<DrawPieChart.DivideItem> divides)
         {
-            for(int i = divides.Count - 1; i >= 0; i--)
-            {
-                if (divides[i].ratio == 0f)
-                    divides.RemoveAt(i);
-            }
+            //for(int i = divides.Count - 1; i >= 0; i--)
+            //{
+            //    if (divides[i].ratio == 0f)
+            //        divides.RemoveAt(i);
+            //}
         }
     }
 }

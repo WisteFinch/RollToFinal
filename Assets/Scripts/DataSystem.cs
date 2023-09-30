@@ -54,7 +54,7 @@ namespace RollToFinal
             if(Data.ContainsKey(key))
                 return Data[key];
             else
-                return 0f;
+                return 0;
         }
 
         /// <summary>

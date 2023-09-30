@@ -15,7 +15,7 @@ namespace RollToFinal
             int step = (int)data;
             var instance = GameLogic.Instance;
             int currentPlayer = instance.CurrentPlayer;
-            int stepSize = currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Step") : (int)DataSystem.Instance.GetData("Player2Step");
+            int stepSize = (currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) > 0 ? -1 : 1;
             int progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
             var platform = currentPlayer == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
 
@@ -65,12 +65,16 @@ namespace RollToFinal
                 instance.Player2Progress = progress;
             player.transform.position = pos;
             instance.UpdateProgress();
-            Destroy(this.gameObject);
         }
 
         void IEffectBase.Register(IEffectBase.TurnStartCallBack start, IEffectBase.TurnEndCallBack end, IEffectBase.LifeCycleCallBack lc)
         {
             return;
+        }
+
+        void IEffectBase.OnLapsed()
+        {
+            Destroy(this.gameObject);
         }
     }
 }

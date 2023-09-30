@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PieChart: {fileID: 5731731440820553732}
-  ChangeRate: 0.05
+  ChangeRate: 0.01
   Divides:
   - color: {r: 0.54509807, g: 0, b: 0, a: 1}
     ratio: 1
@@ -803,7 +803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PieChart: {fileID: 2639344343591371092}
-  ChangeRate: 0.05
+  ChangeRate: 0.01
   Divides:
   - color: {r: 0.09803922, g: 0.09803922, b: 0.4392157, a: 1}
     ratio: 1
