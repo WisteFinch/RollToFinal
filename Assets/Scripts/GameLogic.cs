@@ -117,6 +117,8 @@ namespace RollToFinal
         [Header("游戏参数")]
         public int Length = 200;
 
+        public int SpecialRollCoolDown = 2;
+
         [Header("对象引用")]
 
         /// <summary>
@@ -228,25 +230,34 @@ namespace RollToFinal
 
         [Header("GUI")]
         /// <summary>
-        /// 标题
+        /// UI:标题
         /// </summary>
         public Text UITitle;
 
         /// <summary>
-        /// 介绍
+        /// UI:介绍
         /// </summary>
         public Text UIDescription;
 
         /// <summary>
-        /// 玩家1进度
+        /// UI:玩家1进度
         /// </summary>
         public Text UIPlayer1Progess;
 
         /// <summary>
-        /// 玩家2进度
+        /// UI:玩家2进度
         /// </summary>
         public Text UIPlayer2Progess;
 
+        /// <summary>
+        /// UI:玩家1特殊骰子冷却
+        /// </summary>
+        public Text UIPlayer1CoolDown;
+
+        /// <summary>
+        /// UI:玩家2特殊骰子冷却
+        /// </summary>
+        public Text UIPlayer2CoolDown; 
 
         [Header("运行数据")]
 
@@ -299,6 +310,11 @@ namespace RollToFinal
         public int Player1OddsLevelDelta;
 
         /// <summary>
+        /// 玩家1特殊骰子冷却
+        /// </summary>
+        public int Player1SpecialRollCoolDown = 0;
+
+        /// <summary>
         /// 玩家2概率列表
         /// </summary>
         public List<float> Player2Odds;
@@ -318,6 +334,11 @@ namespace RollToFinal
         /// 玩家2概率等级变化
         /// </summary>
         public int Player2OddsLevelDelta;
+
+        /// <summary>
+        /// 玩家2特殊骰子冷却
+        /// </summary>
+        public int Player2SpecialRollCoolDown = 0;
 
         /// <summary>
         /// 玩家概率对接列表
@@ -505,6 +526,9 @@ namespace RollToFinal
                     DataSystem.Instance.SetData("Player1Reverse", 0);
                     DataSystem.Instance.SetData("Player2Reverse", 0);
                     PlayAndInvoke(OpeningDirector);
+                    Player1SpecialRollCoolDown = Player2SpecialRollCoolDown = SpecialRollCoolDown;
+                    UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+                    UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
                     break;
                 // 开场运镜 -> 玩家开始
                 case GameState.Opening:
@@ -516,6 +540,15 @@ namespace RollToFinal
                     CurrentGameState = GameState.DelegateStart;
                     TurnStartCallBack?.Invoke();
                     EnableStateCheck = true;
+                    if(CurrentPlayer == 1 && Player1SpecialRollCoolDown > 0)
+                    {
+                        Player1SpecialRollCoolDown--;
+                        UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+                    }else if (CurrentPlayer == 2 && Player2SpecialRollCoolDown > 0)
+                    {
+                        Player2SpecialRollCoolDown--;
+                        UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
+                    }
                     break;
                 // 委托：回合开始 -> 玩家闲置
                 case GameState.DelegateStart:
@@ -790,6 +823,20 @@ namespace RollToFinal
         /// </summary>
         public void PlayerSpecialRoll(int player)
         {
+            if(CurrentPlayer == 1)
+            {
+                if (Player1SpecialRollCoolDown > 0)
+                    return;
+                Player1SpecialRollCoolDown = SpecialRollCoolDown;
+                UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+            }
+            else
+            {
+                if (Player2SpecialRollCoolDown > 0)
+                    return;
+                Player2SpecialRollCoolDown = SpecialRollCoolDown;
+                UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
+            }
             if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.SpecialRolling;
