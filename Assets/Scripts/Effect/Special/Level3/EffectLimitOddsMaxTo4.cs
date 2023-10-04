@@ -11,8 +11,11 @@ namespace RollToFinal
 
         public int TargetPlayer = 0;
 
+        public string UUID;
+
         void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
+            UUID = System.Guid.NewGuid().ToString();
             int rollResult = (int)data[0];
             // 确认目标
             TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1) : (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2);
@@ -20,7 +23,7 @@ namespace RollToFinal
             var effects1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectLimitOddsMaxTo4>();
             foreach(var e in effects1)
             {
-                if(e.TargetPlayer == TargetPlayer)
+                if(e.TargetPlayer == TargetPlayer && e.UUID != this.UUID)
                 {
                     ((IEffectBase)e).OnLapsed();
                 }
@@ -38,16 +41,17 @@ namespace RollToFinal
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
                 for (int i = 4; i < delta.Count; i++)
-                    delta[i] -= 100f;
+                    delta[i] -= 1000f;
                 GameLogic.Instance.Player1OddsDelta = delta;
             }
             else
             {
                 var delta = GameLogic.Instance.Player2OddsDelta;
                 for (int i = 4; i < delta.Count; i++)
-                    delta[i] -= 100f;
+                    delta[i] -= 1000f;
                 GameLogic.Instance.Player2OddsDelta = delta;
             }
+            GameLogic.Instance.CalcOdds();
         }
 
         void IEffectBase.Register(IEffectBase.TurnStartCallBack start, IEffectBase.TurnEndCallBack end, IEffectBase.LifeCycleCallBack lc)
@@ -71,16 +75,17 @@ namespace RollToFinal
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
                 for (int i = 4; i < delta.Count; i++)
-                    delta[i] += 100f;
+                    delta[i] += 1000f;
                 GameLogic.Instance.Player1OddsDelta = delta;
             }
             else
             {
                 var delta = GameLogic.Instance.Player2OddsDelta;
                 for (int i = 4; i < delta.Count; i++)
-                    delta[i] += 100f;
+                    delta[i] += 1000f;
                 GameLogic.Instance.Player2OddsDelta = delta;
             }
+            GameLogic.Instance.CalcOdds();
             Destroy(this.gameObject);
         }
     }

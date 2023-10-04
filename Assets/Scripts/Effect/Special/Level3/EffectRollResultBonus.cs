@@ -14,17 +14,22 @@ namespace RollToFinal
 
         public int TargetPlayer = 0;
 
+        public string UUID;
+
         void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
+            UUID = System.Guid.NewGuid().ToString();
             int rollResult = (int)data[0];
             // 确认目标
-            if (rollResult > 3)
+            TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);
+            // 使冲突效果失效
+            var effect1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectRollResultBonus>();
+            foreach (var e in effect1)
             {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2;
-            }
-            else
-            {
-                TargetPlayer = GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1;
+                if (e.TargetPlayer == TargetPlayer && e.UUID != this.UUID)
+                {
+                    ((IEffectBase)e).OnLapsed();
+                }
             }
             // 产生效果
             if (TargetPlayer == 1)

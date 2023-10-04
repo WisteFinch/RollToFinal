@@ -11,8 +11,11 @@ namespace RollToFinal
 
         public int TargetPlayer = 0;
 
+        public string UUID = System.Guid.NewGuid().ToString();
+
         void IEffectBase.OnInstantiated(GameObject player, object[] data)
         {
+            UUID = System.Guid.NewGuid().ToString();
             int rollResult = (int)data[0];
             // 确认目标
             TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);
@@ -20,7 +23,7 @@ namespace RollToFinal
             var effect1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectRiseOddsLevelTo6>();
             foreach(var e in effect1)
             {
-                if(e.TargetPlayer == TargetPlayer)
+                if(e.TargetPlayer == TargetPlayer && e.UUID != this.UUID)
                 {
                     ((IEffectBase)e).OnLapsed();
                 }
@@ -42,6 +45,7 @@ namespace RollToFinal
             {
                 GameLogic.Instance.Player2OddsLevelDelta += 10;
             }
+            GameLogic.Instance.CalcOdds();
         }
 
         void IEffectBase.Register(IEffectBase.TurnStartCallBack start, IEffectBase.TurnEndCallBack end, IEffectBase.LifeCycleCallBack lc)
@@ -69,6 +73,7 @@ namespace RollToFinal
             {
                 GameLogic.Instance.Player2OddsLevelDelta -= 10;
             }
+            GameLogic.Instance.CalcOdds();
             Destroy(this.gameObject);
         }
     }

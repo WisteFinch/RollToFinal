@@ -39,6 +39,7 @@ namespace RollToFinal
                 else
                     GameLogic.Instance.Player2OddsLevel--;
             }
+            GameLogic.Instance.CalcOdds();
             // 使自身失效
             ((IEffectBase)this).OnLapsed();
         }

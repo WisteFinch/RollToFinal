@@ -46,4 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeCycle: 0
   TargetPlayer: 0
-  EffectMove: {fileID: 0}
+  EffectMove: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b,
+    type: 3}

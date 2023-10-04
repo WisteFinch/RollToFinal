@@ -13,7 +13,7 @@ namespace RollToFinal
             int step = (int)data[0];
             var instance = GameLogic.Instance;
             int currentPlayer = (int)data[1];
-            int stepSize = (currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) > 0 ? -1 : 1;
+            int stepSize = (currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
             int progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
             var platform = currentPlayer == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
 

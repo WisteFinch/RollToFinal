@@ -27,12 +27,13 @@ namespace RollToFinal
             }
             else
             {
-                var delta = GameLogic.Instance.Player1OddsDelta;
+                var delta = GameLogic.Instance.Player2OddsDelta;
                 for (int i = 0; i < 3; i++)
                     delta[i] += 5f;
                 for (int i = 3; i < delta.Count; i++)
                     delta[i] -= 5f;
             }
+            GameLogic.Instance.CalcOdds();
             // 使自身失效
             ((IEffectBase)this).OnLapsed();
         }

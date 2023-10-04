@@ -341,7 +341,7 @@ namespace RollToFinal
         public int Player2SpecialRollCoolDown = 0;
 
         /// <summary>
-        /// 玩家概率对接列表
+        /// 玩家概率等级列表
         /// </summary>
         private List<List<float>> PlayerOddsLevelList = new() { 
             new List<float>() { 100f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f},  // 0级，全1
@@ -633,7 +633,7 @@ namespace RollToFinal
                     break;
                 // 特殊骰子 -> 特殊骰子效果
                 case GameState.SpecialRolling:
-                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
+                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
                     var specialData = (int)DataSystem.Instance.GetData("RollResult");
                     if (CurrentPlayer == 1)
                     {
@@ -840,10 +840,10 @@ namespace RollToFinal
             if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.SpecialRolling;
-                int res = player == 1 ? GetRollResult(Player1Odds) : GetRollResult(Player2Odds);
-                var index = UnityEngine.Random.Range(0, SpecialOptionsList[res].Effects.Count);
-                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res].Effects[index].GetComponent<IEffectBase>().Name}";
-                UIDescription.text = SpecialOptionsList[res].Effects[index].GetComponent<IEffectBase>().Description;
+                int res = GetRollResult(Specialodds);
+                var index = UnityEngine.Random.Range(0, SpecialOptionsList[res - 1].Effects.Count);
+                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}";
+                UIDescription.text = SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Description;
                 DataSystem.Instance.SetData("RollResult", res);
                 DataSystem.Instance.SetData("EffectIndex", index);
                 PlayAndInvoke(RollingDirector);

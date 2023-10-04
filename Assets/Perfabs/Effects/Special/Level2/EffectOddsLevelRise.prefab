@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1653678900341096615}
-  - component: {fileID: -3949256363692780483}
+  - component: {fileID: 4852356390898909176}
   m_Layer: 0
   m_Name: EffectOddsLevelRise
   m_TagString: Effect
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-3949256363692780483
+--- !u!114 &4852356390898909176
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,8 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7835100483934819122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6362590d1b2f35346ba933e0a22850b5, type: 3}
+  m_Script: {fileID: 11500000, guid: b9211f83193385e4daee2a2de108615d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LifeCycle: 0
   TargetPlayer: 0
+  EffectMove: {fileID: 7835100483934819122, guid: db0f30d83433e63449b43e7690d17e8b,
+    type: 3}
