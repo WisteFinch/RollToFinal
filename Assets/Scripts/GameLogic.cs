@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
@@ -216,6 +218,11 @@ namespace RollToFinal
         /// </summary>
         public GameObject Effects;
 
+        /// <summary>
+        /// 临时存放效果实例
+        /// </summary>
+        private GameObject TempEffectInstance;
+
 
         [Header("时间轴")]
         /// <summary>
@@ -232,7 +239,7 @@ namespace RollToFinal
         /// <summary>
         /// UI:标题
         /// </summary>
-        public Text UITitle;
+        public TextMeshProUGUI UITitle;
 
         /// <summary>
         /// UI:介绍
@@ -315,6 +322,21 @@ namespace RollToFinal
         public int Player1SpecialRollCoolDown = 0;
 
         /// <summary>
+        /// 玩家1幸运抵消
+        /// </summary>
+        public int Player1LuckyBalance = 0;
+
+        /// <summary>
+        /// 玩家1厄运抵消
+        /// </summary>
+        public int Player1CalamityBalance = 0;
+
+        /// <summary>
+        /// 玩家1进度
+        /// </summary>
+        public int Player1Progress;
+
+        /// <summary>
         /// 玩家2概率列表
         /// </summary>
         public List<float> Player2Odds;
@@ -339,6 +361,21 @@ namespace RollToFinal
         /// 玩家2特殊骰子冷却
         /// </summary>
         public int Player2SpecialRollCoolDown = 0;
+
+        /// <summary>
+        /// 玩家12幸运抵消
+        /// </summary>
+        public int Player2LuckyBalance = 0;
+
+        /// <summary>
+        /// 玩家2厄运抵消
+        /// </summary>
+        public int Player2CalamityBalance = 0;
+
+        /// <summary>
+        /// 玩家2进度
+        /// </summary>
+        public int Player2Progress;
 
         /// <summary>
         /// 玩家概率等级列表
@@ -380,16 +417,6 @@ namespace RollToFinal
         /// 状态占用
         /// </summary>
         private int StateBlock = 0;
-
-        /// <summary>
-        /// 玩家1进度
-        /// </summary>
-        public int Player1Progress;
-
-        /// <summary>
-        /// 玩家2进度
-        /// </summary>
-        public int Player2Progress;
 
         private void Start()
         {
@@ -556,19 +583,9 @@ namespace RollToFinal
                     break;
                 // 掷骰子 -> 移动
                 case GameState.Rolling:
-                    var rollPerfab = RollOptionsList[(int)DataSystem.Instance.GetData("RollResult")].Effects[0];
-                    var rollStep = (int)DataSystem.Instance.GetData("RollResult");
-                    if (CurrentPlayer == 1)
-                    {
-                        var obj = Instantiate(rollPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, new object[] { rollStep, CurrentPlayer });
-                    }
-                    else
-                    {
-                        var obj = Instantiate(rollPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, new object[] { rollStep, CurrentPlayer });
-                    }
+                    // 应用效果
                     CurrentGameState = GameState.Moving;
+                    TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                     EnableStateCheck = true;
                     break;
                 // 移动 -> 委托：回合结束 | 方块效果
@@ -582,7 +599,7 @@ namespace RollToFinal
                         var perfab = effects[index];
                         var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
+                        obj.GetComponent<IEffectBase>().OnInstantiated();
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
                         UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
@@ -596,7 +613,7 @@ namespace RollToFinal
                         var perfab = effects[index];
                         var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1);
+                        obj.GetComponent<IEffectBase>().OnInstantiated();
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
                         UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
@@ -633,21 +650,12 @@ namespace RollToFinal
                     break;
                 // 特殊骰子 -> 特殊骰子效果
                 case GameState.SpecialRolling:
-                    var specialPerfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
-                    var specialData = (int)DataSystem.Instance.GetData("RollResult");
-                    if (CurrentPlayer == 1)
-                    {
-                        var obj = Instantiate(specialPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player1, new object[] { specialData });
-                    }
-                    else
-                    {
-                        var obj = Instantiate(specialPerfab, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
-                        obj.GetComponent<IEffectBase>().OnInstantiated(Player2, new object[] { specialData });
-                    }
                     CurrentGameState = GameState.SpecialEffect;
+                    // 应用效果
+                    if (TempEffectInstance != null)
+                    {
+                        TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
+                    }
                     EnableStateCheck = true;
                     break;
                 // 特殊骰子效果 -> 玩家闲置:
@@ -810,10 +818,18 @@ namespace RollToFinal
             if(player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.Rolling;
+                // 获取点数
                 int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta"): GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
+                DataSystem.Instance.SetData("RollResult", res);
+                // 创建效果
+                var perfab = RollOptionsList[res - 1].Effects[0];
+                var step = (int)DataSystem.Instance.GetData("RollResult");
+                TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
+                TempEffectInstance.GetComponent<IEffectBase>().OnInstantiated(new object[] { step, CurrentPlayer });
+                // 设置UI
                 UITitle.text = RollOptionsList[res - 1].Title;
                 UIDescription.text = RollOptionsList[res - 1].Description;
-                DataSystem.Instance.SetData("RollResult", res);
+
                 PlayAndInvoke(RollingDirector);
             }
         }
@@ -840,14 +856,79 @@ namespace RollToFinal
             if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.SpecialRolling;
+                // 获取点数&序号
                 int res = GetRollResult(Specialodds);
                 var index = UnityEngine.Random.Range(0, SpecialOptionsList[res - 1].Effects.Count);
-                UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}";
-                UIDescription.text = SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Description;
                 DataSystem.Instance.SetData("RollResult", res);
                 DataSystem.Instance.SetData("EffectIndex", index);
+                // 创建效果&设置UI
+                var perfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
+                TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
+                var effect = TempEffectInstance.GetComponent<IEffectBase>();
+                effect.Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                effect.OnInstantiated(new object[] { res });
+                if (CalcBalance(effect.Target, effect.Type))
+                {
+                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}";
+                }
+                else
+                {
+                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : <s>{SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}</s>";
+                    Destroy(TempEffectInstance);
+                }
+                UIDescription.text = SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Description;
+
                 PlayAndInvoke(RollingDirector);
             }
+        }
+
+        /// <summary>
+        /// 计算效果抵消
+        /// </summary>
+        /// <param name="target">目标玩家序号</param>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        private bool CalcBalance(int target, IEffectBase.EffectType type)
+        {
+            if(target == 1)
+            {
+                if(type == IEffectBase.EffectType.Lucky)
+                {
+                    if(Player1LuckyBalance > 0)
+                    {
+                        Player1LuckyBalance--;
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (Player1CalamityBalance > 0)
+                    {
+                        Player1CalamityBalance--;
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                if (type == IEffectBase.EffectType.Lucky)
+                {
+                    if (Player2LuckyBalance > 0)
+                    {
+                        Player2LuckyBalance--;
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (Player2CalamityBalance > 0)
+                    {
+                        Player2CalamityBalance--;
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         #endregion

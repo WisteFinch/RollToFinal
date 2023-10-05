@@ -143,6 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Length: 50
+  SpecialRollCoolDown: 2
   Platform1: {fileID: 0}
   Platform2: {fileID: 0}
   Player1: {fileID: 0}
@@ -242,6 +243,8 @@ MonoBehaviour:
   UIDescription: {fileID: 0}
   UIPlayer1Progess: {fileID: 0}
   UIPlayer2Progess: {fileID: 0}
+  UIPlayer1CoolDown: {fileID: 0}
+  UIPlayer2CoolDown: {fileID: 0}
   CurrentGameState: 0
   CurrentPlayer: 1
   PlatformBlocks1: []
@@ -250,11 +253,17 @@ MonoBehaviour:
   Player1OddsDelta: []
   Player1OddsLevel: 2
   Player1OddsLevelDelta: 0
+  Player1SpecialRollCoolDown: 0
+  Player1LuckyBalance: 0
+  Player1CalamityBalance: 0
+  Player1Progress: 0
   Player2Odds: []
   Player2OddsDelta: []
   Player2OddsLevel: 2
   Player2OddsLevelDelta: 0
-  Player1Progress: 0
+  Player2SpecialRollCoolDown: 0
+  Player2LuckyBalance: 0
+  Player2CalamityBalance: 0
   Player2Progress: 0
 --- !u!1 &7520866617332777310
 GameObject:

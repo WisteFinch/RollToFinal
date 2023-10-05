@@ -7,17 +7,23 @@ namespace RollToFinal
         public string Name { get => "点数分布提高"; }
         public string Description { get => ""; }
 
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
+
+        int IEffectBase.Target { get; set; }
+
         public int LifeCycle = 0;
 
-        public int TargetPlayer = 0;
-
-        void IEffectBase.OnInstantiated(GameObject player, object[] data)
+        void IEffectBase.OnInstantiated(object[] data)
         {
             int rollResult = (int)data[0];
             // 确认目标
-            TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);
+            ((IEffectBase)this).Target = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);    
+        }
+
+        void IEffectBase.OnAssert()
+        {
             // 产生效果
-            if (TargetPlayer == 1)
+            if (((IEffectBase)this).Target == 1)
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
                 for (int i = 0; i < 3; i++)

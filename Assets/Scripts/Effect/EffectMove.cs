@@ -7,27 +7,37 @@ namespace RollToFinal
         public string Name { get => "移动"; }
         public string Description { get => ""; }
 
-        void IEffectBase.OnInstantiated(GameObject player, object[] data)
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
+        int IEffectBase.Target { get; set; }
+
+        public int Movement = 0;
+
+        void IEffectBase.OnInstantiated(object[] data)
         {
-            Vector3 pos = player.transform.position;
-            int step = (int)data[0];
+            Movement = (int)data[0];
+            ((IEffectBase)this).Target = (int)data[1];
+        }
+
+        void IEffectBase.OnAssert()
+        {
             var instance = GameLogic.Instance;
-            int currentPlayer = (int)data[1];
-            int stepSize = (currentPlayer == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
-            int progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
-            var platform = currentPlayer == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
+            var player = ((IEffectBase)this).Target == 1 ? instance.Player1 : instance.Player2;
+            Vector3 pos = player.transform.position;
+            int stepSize = (((IEffectBase)this).Target == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
+            int progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
+            var platform = ((IEffectBase)this).Target == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
 
             // 判断方块
-            while (step > 0)
+            while (Movement > 0)
             {
                 Block.BlockType type = platform[progress + stepSize].GetComponent<Block>().Type;
                 if (type == Block.BlockType.Barrier && platform[progress].GetComponent<Block>().Type != Block.BlockType.Barrier)
                 {
-                    if (step >= 3)
+                    if (Movement >= 3)
                     {
                         progress += stepSize;
                     }
-                    step -= 3;
+                    Movement -= 3;
                 }
                 else if (type == Block.BlockType.EndLine)
                 {
@@ -42,7 +52,7 @@ namespace RollToFinal
                 }
                 else
                 {
-                    step--;
+                    Movement--;
                     progress += stepSize;
                 }
             }
@@ -53,11 +63,11 @@ namespace RollToFinal
                 pos.y = 0;
             if (platform[progress].GetComponent<Block>().Type == Block.BlockType.Empty)
             {
-                progress = currentPlayer == 1 ? instance.Player1Progress : instance.Player2Progress;
+                progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
             }
 
             pos.z = progress;
-            if(currentPlayer == 1)
+            if (((IEffectBase)this).Target == 1)
                 instance.Player1Progress = progress;
             else
                 instance.Player2Progress = progress;

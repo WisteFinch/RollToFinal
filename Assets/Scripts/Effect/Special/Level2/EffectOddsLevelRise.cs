@@ -7,24 +7,31 @@ namespace RollToFinal
         public string Name { get => "骰子升级"; }
         public string Description { get => ""; }
 
-        public int LifeCycle = 0;
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
 
-        public int TargetPlayer = 0;
+        int IEffectBase.Target { get; set; }
+
+        public int LifeCycle = 0;
 
         public GameObject EffectMove;
 
-        void IEffectBase.OnInstantiated(GameObject player, object[] data)
+        void IEffectBase.OnInstantiated(object[] data)
         {
             int rollResult = (int)data[0];
             // 确认目标
-            TargetPlayer = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);
+            ((IEffectBase)this).Target = rollResult > 3 ? (GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2) : (GameLogic.Instance.CurrentPlayer == 1 ? 2 : 1);
+            
+        }
+
+        void IEffectBase.OnAssert()
+        {
             // 产生效果
-            if (TargetPlayer == 1)
+            if (((IEffectBase)this).Target == 1)
             {
-                if(GameLogic.Instance.Player1OddsLevel >= 4)
+                if (GameLogic.Instance.Player1OddsLevel >= 4)
                 {
                     var obj = Instantiate(EffectMove, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.transform);
-                    obj.GetComponent<IEffectBase>().OnInstantiated(GameLogic.Instance.Player1, new object[] { 5, 1 });
+                    obj.GetComponent<IEffectBase>().OnInstantiated(new object[] { 5, 1 });
                 }
                 else
                     GameLogic.Instance.Player1OddsLevel++;
@@ -34,7 +41,7 @@ namespace RollToFinal
                 if (GameLogic.Instance.Player2OddsLevel >= 4)
                 {
                     var obj = Instantiate(EffectMove, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.transform);
-                    obj.GetComponent<IEffectBase>().OnInstantiated(GameLogic.Instance.Player2, new object[] { 5, 2 });
+                    obj.GetComponent<IEffectBase>().OnInstantiated(new object[] { 5, 2 });
                 }
                 else
                     GameLogic.Instance.Player2OddsLevel++;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,28 @@ namespace RollToFinal
         /// 生命周期检测委托
         /// </summary>
         public delegate void LifeCycleCallBack();
+
+        /// <summary>
+        /// 效果类型
+        /// </summary>
+        [Serializable]
+        public enum EffectType
+        {
+            /// <summary>
+            /// 幸运
+            /// </summary>
+            Lucky,
+            /// <summary>
+            /// 厄运
+            /// </summary>
+            Calamity
+        }
+
+        /// <summary>
+        /// 目标效果
+        /// </summary>
+        public int Target { get; set; }
+
         /// <summary>
         /// 注册委托
         /// </summary>
@@ -28,9 +51,13 @@ namespace RollToFinal
         /// <summary>
         /// 实例化时调用
         /// </summary>
-        /// <param name="player">玩家实例</param>
         /// <param name="data">数据</param>
-        public void OnInstantiated(GameObject player, object[] data = null);
+        public void OnInstantiated(object[] data = null);
+
+        /// <summary>
+        /// 生效时调用
+        /// </summary>
+        public void OnAssert();
 
         /// <summary>
         /// 失效时调用
@@ -46,5 +73,10 @@ namespace RollToFinal
         /// 介绍
         /// </summary>
         public string Description { get; }
+
+        /// <summary>
+        /// 效果类型
+        /// </summary>
+        public EffectType Type { get; }
     }
 }
