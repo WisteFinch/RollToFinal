@@ -892,7 +892,7 @@ namespace RollToFinal
         {
             if(target == 1)
             {
-                if(type == IEffectBase.EffectType.Lucky)
+                if(type == IEffectBase.EffectType.Gain)
                 {
                     if(Player1LuckyBalance > 0)
                     {
@@ -900,7 +900,7 @@ namespace RollToFinal
                         return false;
                     }
                 }
-                else
+                else if (type == IEffectBase.EffectType.Reduce)
                 {
                     if (Player1CalamityBalance > 0)
                     {
@@ -911,7 +911,7 @@ namespace RollToFinal
             }
             else
             {
-                if (type == IEffectBase.EffectType.Lucky)
+                if (type == IEffectBase.EffectType.Gain)
                 {
                     if (Player2LuckyBalance > 0)
                     {

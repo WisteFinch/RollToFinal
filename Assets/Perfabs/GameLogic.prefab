@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Length: 50
-  SpecialRollCoolDown: 2
+  SpecialRollCoolDown: 0
   Platform1: {fileID: 0}
   Platform2: {fileID: 0}
   Player1: {fileID: 0}
@@ -234,6 +234,16 @@ MonoBehaviour:
     - {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088, type: 3}
     - {fileID: 7835100483934819122, guid: 3377754ae8bb1194894822a247e1b9cc, type: 3}
     - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
+  - Title: "\u5E78\u8FD0"
+    Description: 
+    Effects:
+    - {fileID: 7835100483934819122, guid: 801a8f6a8b19a374ea5037445059c388, type: 3}
+    - {fileID: 7835100483934819122, guid: fed97aefacf952742b70fcdd816d774d, type: 3}
+    - {fileID: 7835100483934819122, guid: c03692ee42aafbf4abbc903e03c2dafc, type: 3}
+  - Title: "\u5384\u8FD0"
+    Description: 
+    Effects:
+    - {fileID: 7835100483934819122, guid: 0e806bfcbf2435b489c9e0d52ddce99a, type: 3}
   EventOptionsList: []
   TrapOptionsList: []
   Effects: {fileID: 2718564955195390143}

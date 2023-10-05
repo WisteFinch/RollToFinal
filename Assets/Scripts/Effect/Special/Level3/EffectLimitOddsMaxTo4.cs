@@ -7,7 +7,7 @@ namespace RollToFinal
         public string Name { get => "降低骰子上限至4"; }
         public string Description { get => ""; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
 
         int IEffectBase.Target { get; set; }
 

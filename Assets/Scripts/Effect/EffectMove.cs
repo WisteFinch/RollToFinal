@@ -7,7 +7,7 @@ namespace RollToFinal
         public string Name { get => "移动"; }
         public string Description { get => ""; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
         int IEffectBase.Target { get; set; }
 
         public int Movement = 0;

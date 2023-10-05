@@ -7,7 +7,7 @@ namespace RollToFinal
         public string Name { get => "全6点数"; }
         public string Description { get => ""; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
         int IEffectBase.Target { get; set; }
 

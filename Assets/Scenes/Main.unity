@@ -1204,7 +1204,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375804156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1675509, y: -0.2548955, z: 0.044895135, w: 0.95128304}
+  m_LocalRotation: {x: 0.1675509, y: -0.25489548, z: 0.044895124, w: 0.95128304}
   m_LocalPosition: {x: 5, y: 5, z: -8.6602545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1752,6 +1752,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d577dda1b908b3944a9688ebdb588f05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1795980802 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2626562782380017370, guid: 5bbfc1eb0bfc0fd49a42d2691e13be62,
+    type: 3}
+  m_PrefabInstance: {fileID: 2525555677629755708}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1801807642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2162,11 +2174,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Title
       objectReference: {fileID: 0}
-    - target: {fileID: 2948014188553777662, guid: 5bbfc1eb0bfc0fd49a42d2691e13be62,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6861657504623654853, guid: 5bbfc1eb0bfc0fd49a42d2691e13be62,
         type: 3}
       propertyPath: m_Text
@@ -2416,7 +2423,7 @@ PrefabInstance:
         type: 3}
       propertyPath: UITitle
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1795980802}
     - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
         type: 3}
       propertyPath: Platform1
@@ -2479,14 +2486,33 @@ PrefabInstance:
       objectReference: {fileID: 2525555677629755710}
     - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
         type: 3}
-      propertyPath: SpecialRollCoolDown
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
-        type: 3}
       propertyPath: PlayerMiddleViewCamera
       value: 
       objectReference: {fileID: 358456339}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: SpecialOptionsList.Array.data[6].Effects.Array.data[3]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9,
+        type: 3}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: SpecialOptionsList.Array.data[7].Effects.Array.data[1]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088,
+        type: 3}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: SpecialOptionsList.Array.data[7].Effects.Array.data[2]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088,
+        type: 3}
+    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
+        type: 3}
+      propertyPath: SpecialOptionsList.Array.data[7].Effects.Array.data[3]
+      value: 
+      objectReference: {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9,
+        type: 3}
     - target: {fileID: 1852612993956569192, guid: 147efd5d1ccfcd243975ded238a6958a,
         type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value

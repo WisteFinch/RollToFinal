@@ -29,13 +29,21 @@ namespace RollToFinal
         public enum EffectType
         {
             /// <summary>
+            /// 增益
+            /// </summary>
+            Gain,
+            /// <summary>
+            /// 损耗
+            /// </summary>
+            Reduce,
+            /// <summary>
             /// 幸运
             /// </summary>
             Lucky,
             /// <summary>
             /// 厄运
             /// </summary>
-            Calamity
+            Calamity,
         }
 
         /// <summary>

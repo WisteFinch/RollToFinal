@@ -7,7 +7,7 @@ namespace RollToFinal
         public string Name { get => "点数分布提高"; }
         public string Description { get => ""; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
         int IEffectBase.Target { get; set; }
 
