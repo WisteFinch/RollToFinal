@@ -54,7 +54,7 @@ namespace RollToFinal
         /// <summary>
         /// 注册委托
         /// </summary>
-        public void Register(TurnStartCallBack start, TurnEndCallBack end, LifeCycleCallBack lc);
+        public void Register(ref TurnStartCallBack start, ref TurnEndCallBack end, ref LifeCycleCallBack lc);
 
         /// <summary>
         /// 实例化时调用

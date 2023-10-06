@@ -31,7 +31,7 @@ namespace RollToFinal
             while (Movement > 0)
             {
                 if (progress + stepSize < 0)
-                    return;
+                    break;
                 Block.BlockType type = platform[progress + stepSize].GetComponent<Block>().Type;
                 if (type == Block.BlockType.Barrier && platform[progress].GetComponent<Block>().Type != Block.BlockType.Barrier)
                 {
@@ -79,7 +79,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(IEffectBase.TurnStartCallBack start, IEffectBase.TurnEndCallBack end, IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
         {
             return;
         }

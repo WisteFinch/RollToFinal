@@ -602,7 +602,7 @@ namespace RollToFinal
                         var index = UnityEngine.Random.Range(0, effects.Count);
                         var perfab = effects[index];
                         var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
                         UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
@@ -613,7 +613,7 @@ namespace RollToFinal
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
                         var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
@@ -623,7 +623,6 @@ namespace RollToFinal
                     else
                     {
                         CurrentGameState = GameState.DelegateEnd;
-                        TurnEndCallBack?.Invoke();
                         EnableStateCheck = true;
                     }
                     break;
@@ -644,6 +643,7 @@ namespace RollToFinal
                 // 切换玩家 -> 委托：清除失效效果
                 case GameState.SwitchPlayer:
                     CurrentGameState = GameState.DelegateLC;
+                    Debug.Log(233);
                     LifeCycleCallBack?.Invoke();
                     EnableStateCheck = true;
                     break;
@@ -876,7 +876,7 @@ namespace RollToFinal
                 var perfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
-                effect.Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
+                effect.Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                 effect.OnInstantiated(new object[] { res });
                 if (CalcBalance(effect.Target, effect.Type))
                 {
