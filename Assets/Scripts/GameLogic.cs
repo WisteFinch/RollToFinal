@@ -113,8 +113,14 @@ namespace RollToFinal
             /// <summary>
             /// 胜利
             /// </summary>
-            Win
+            Win,
+            /// <summary>
+            /// 判定
+            /// </summary>
+            Judge
         }
+
+        public delegate void ChangeStateCallBack();
 
         [Header("游戏参数")]
         public int Length = 200;
@@ -124,14 +130,9 @@ namespace RollToFinal
         [Header("对象引用")]
 
         /// <summary>
-        /// 玩家1平台
+        /// 玩家平台
         /// </summary>
-        public GameObject Platform1;
-
-        /// <summary>
-        /// 玩家2平台
-        /// </summary>
-        public GameObject Platform2;
+        public GameObject Platform;
 
         /// <summary>
         /// 玩家1
@@ -211,7 +212,7 @@ namespace RollToFinal
         /// <summary>
         /// 陷阱方块选项列表
         /// </summary>
-        public List <OptionItem> TrapOptionsList;
+        public GameObject EffectTrap;
 
         /// <summary>
         /// 存放效果
@@ -274,21 +275,20 @@ namespace RollToFinal
         public GameState CurrentGameState = GameState.GameStart;
 
         /// <summary>
+        /// 游戏状态暂存
+        /// </summary>
+        public GameState TempGameState;
+
+        /// <summary>
         /// 当前玩家
         /// </summary>
         public int CurrentPlayer = 1;
 
         /// <summary>
-        /// 玩家1平台方块
+        /// 玩家平台方块
         /// </summary>
         [HideInInspector]
-        public List<GameObject> PlatformBlocks1 = new();
-
-        /// <summary>
-        /// 玩家2平台方块
-        /// </summary>
-        [HideInInspector]
-        public List<GameObject> PlatformBlocks2 = new();
+        public List<GameObject> PlatformBlocks = new();
 
         /// <summary>
         /// 平台方块总概率
@@ -409,6 +409,11 @@ namespace RollToFinal
         private IEffectBase.LifeCycleCallBack LifeCycleCallBack = null;
 
         /// <summary>
+        /// 游戏状态改变委托
+        /// </summary>
+        public ChangeStateCallBack CSCallBack = null;
+
+        /// <summary>
         /// 启用状态检查
         /// </summary>
         private bool EnableStateCheck = false;
@@ -416,7 +421,7 @@ namespace RollToFinal
         /// <summary>
         /// 状态占用
         /// </summary>
-        private int StateBlock = 0;
+        public int StateBlock = 0;
 
         private void Start()
         {
@@ -428,13 +433,8 @@ namespace RollToFinal
         private void OnDestroy()
         {
             // 销毁原有平台
-            PlatformBlocks1.Clear();
-            foreach (var item in PlatformBlocks1)
-            {
-                Destroy(item);
-            }
-            PlatformBlocks2.Clear();
-            foreach (var item in PlatformBlocks2)
+            PlatformBlocks.Clear();
+            foreach (var item in PlatformBlocks)
             {
                 Destroy(item);
             }
@@ -457,13 +457,8 @@ namespace RollToFinal
         public void GeneratePlatform()
         {
             // 销毁原有平台
-            PlatformBlocks1.Clear();
-            foreach (var item in PlatformBlocks1) {
-                Destroy(item);
-            }
-            PlatformBlocks2.Clear();
-            foreach (var item in PlatformBlocks2)
-            {
+            PlatformBlocks.Clear();
+            foreach (var item in PlatformBlocks) {
                 Destroy(item);
             }
             // 计算概率和
@@ -504,19 +499,27 @@ namespace RollToFinal
         /// 平台添加方块
         /// </summary>
         /// <param name="perfab">方块预制体</param>
-        /// <param name="target">目标平台 0为全部</param>
-        private void AddBlock(GameObject perfab, int target = 0)
+        private void AddBlock(GameObject perfab)
         {
-            if (target == 0 || target == 1)
-            {
-                GameObject obj1 = Instantiate(perfab, new Vector3(Platform1.transform.position.x, Platform1.transform.position.y, PlatformBlocks1.Count + Platform1.transform.position.z), Quaternion.identity, Platform1.transform);
-                PlatformBlocks1.Add(obj1);
-            }
-            if (target == 0 || target == 2)
-            {
-                GameObject obj2 = Instantiate(perfab, new Vector3(Platform2.transform.position.x, Platform2.transform.position.y, PlatformBlocks2.Count + Platform2.transform.position.z), Quaternion.identity, Platform2.transform);
-                PlatformBlocks2.Add(obj2);
-            }
+            GameObject obj = Instantiate(perfab, new Vector3(Platform.transform.position.x, Platform.transform.position.y, PlatformBlocks.Count + Platform.transform.position.z), Quaternion.identity, Platform.transform);
+            obj.GetComponent<Block>().Index = PlatformBlocks.Count;
+            PlatformBlocks.Add(obj);
+        }
+
+        /// <summary>
+        /// 替换方块
+        /// </summary>
+        /// <param name="target">目标方块</param>
+        /// <param name="perfab">预制体</param>
+        public void ReplaceBlock(GameObject target, GameObject perfab)
+        {
+            GameObject obj;
+            int index = target.GetComponent<Block>().Index;
+            obj = Instantiate(perfab, target.transform.position, Quaternion.identity, Platform.transform);
+            obj.GetComponent<Block>().Index = index;
+            Destroy(PlatformBlocks[index]);
+            PlatformBlocks[index] = obj;
+
         }
 
         #endregion
@@ -528,7 +531,7 @@ namespace RollToFinal
         /// <param name="director">时间轴</param>
         private void InvokeAfterTimelineFinish(PlayableDirector director)
         {
-            Invoke(nameof(OnChangeState), (float)director.duration);
+            Invoke(nameof(OnChangeState), (float)director.duration + 0.05f);
         }
 
         /// <summary>
@@ -543,6 +546,7 @@ namespace RollToFinal
 
         public void OnChangeState()
         {
+            CSCallBack?.Invoke();
             switch (CurrentGameState)
             {
                 case GameState.GameStart:
@@ -590,7 +594,7 @@ namespace RollToFinal
                     break;
                 // 移动 -> 委托：回合结束 | 方块效果
                 case GameState.Moving:
-                    if((CurrentPlayer == 1 ? PlatformBlocks1[Player1Progress].GetComponent<Block>().Type : PlatformBlocks2[Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Raffle)
+                    if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Raffle)
                     {
                         CurrentGameState = GameState.BlockEffect;
                         var rand = UnityEngine.Random.Range(0, EventOptionsList.Count);
@@ -604,18 +608,16 @@ namespace RollToFinal
                         UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
                     }
-                    else if ((CurrentPlayer == 1 ? PlatformBlocks1[Player1Progress].GetComponent<Block>().Type : PlatformBlocks2[Player2Progress].GetComponent<Block>().Type) == Block.BlockType.Trap)
+                    else if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Trap)
                     {
+                        EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
-                        var rand = UnityEngine.Random.Range(0, TrapOptionsList.Count);
-                        var effects = EventOptionsList[rand].Effects;
-                        var index = UnityEngine.Random.Range(0, effects.Count);
-                        var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(TurnStartCallBack, TurnEndCallBack, LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
-                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
-                        UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
+                        TempEffectInstance = obj;
+                        UITitle.text = obj.GetComponent<IEffectBase>().Name;
+                        UIDescription.text = obj.GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
                     }
                     else
@@ -627,12 +629,14 @@ namespace RollToFinal
                     break;
                 // 方块效果 --> 委托：回合结束
                 case GameState.BlockEffect:
+                    TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
+
                     CurrentGameState = GameState.DelegateEnd;
-                    TurnEndCallBack?.Invoke();
                     EnableStateCheck = true;
                     break;
                 // 委托：回合结束 -> 切换玩家
                 case GameState.DelegateEnd:
+                    TurnEndCallBack?.Invoke();
                     CurrentGameState = GameState.SwitchPlayer;
                     SwitchPlayer(CurrentPlayer == 1 ? 2 : 1);
                     EnableStateCheck = true;
@@ -661,6 +665,11 @@ namespace RollToFinal
                 // 特殊骰子效果 -> 玩家闲置:
                 case GameState.SpecialEffect:
                     CurrentGameState = GameState.PlayerIdle;
+                    EnableStateCheck = true;
+                    break;
+                // 判定 -> 返回上一状态
+                case GameState.Judge:
+                    CurrentGameState = TempGameState;
                     EnableStateCheck = true;
                     break;
             }
@@ -818,6 +827,7 @@ namespace RollToFinal
             if(player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.Rolling;
+                EnableStateCheck = false;
                 // 获取点数
                 int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta"): GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
                 DataSystem.Instance.SetData("RollResult", res);
@@ -855,6 +865,7 @@ namespace RollToFinal
             }
             if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
             {
+                EnableStateCheck = false;
                 CurrentGameState = GameState.SpecialRolling;
                 // 获取点数&序号
                 int res = GetRollResult(Specialodds);
@@ -881,6 +892,23 @@ namespace RollToFinal
                 PlayAndInvoke(RollingDirector);
             }
         }
+
+        public void PlayerJudge(int player)
+        {
+            EnableStateCheck = false;
+            TempGameState = CurrentGameState;
+            CurrentGameState = GameState.Judge;
+            // 获取点数
+            int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta") : GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
+            DataSystem.Instance.SetData("JudgeResult", res);
+            // 设置UI
+            UITitle.text = "判定 : " + RollOptionsList[res - 1].Title;
+            UIDescription.text = "";
+
+            PlayAndInvoke(RollingDirector);
+        }
+
+
 
         /// <summary>
         /// 计算效果抵消

@@ -25,11 +25,13 @@ namespace RollToFinal
             Vector3 pos = player.transform.position;
             int stepSize = (((IEffectBase)this).Target == 1 ? (int)DataSystem.Instance.GetData("Player1Reverse") : (int)DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
             int progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
-            var platform = ((IEffectBase)this).Target == 1 ? instance.PlatformBlocks1 : instance.PlatformBlocks2;
+            var platform = instance.PlatformBlocks;
 
             // 判断方块
             while (Movement > 0)
             {
+                if (progress + stepSize < 0)
+                    return;
                 Block.BlockType type = platform[progress + stepSize].GetComponent<Block>().Type;
                 if (type == Block.BlockType.Barrier && platform[progress].GetComponent<Block>().Type != Block.BlockType.Barrier)
                 {

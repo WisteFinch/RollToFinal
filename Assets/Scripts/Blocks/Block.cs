@@ -19,5 +19,8 @@ namespace RollToFinal
 
         public BlockType Type;
 
+        public List<object> Data = new();
+
+        public int Index;
     }
 }

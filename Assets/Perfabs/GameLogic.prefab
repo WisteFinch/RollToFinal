@@ -144,8 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Length: 50
   SpecialRollCoolDown: 0
-  Platform1: {fileID: 0}
-  Platform2: {fileID: 0}
+  Platform: {fileID: 0}
   Player1: {fileID: 0}
   Player2: {fileID: 0}
   Player1PieChart: {fileID: 0}
@@ -165,6 +164,8 @@ MonoBehaviour:
   - Block: {fileID: 7362363394570901005, guid: 41cee7d9dd8c9bb4aaac811c0394607f, type: 3}
     Odds: 1
   - Block: {fileID: 7362363394570901005, guid: c9d6dccefa11f8747b64c3c46f916604, type: 3}
+    Odds: 1
+  - Block: {fileID: 7362363394570901005, guid: bf14ad55bb8966642943d2fdf4baa1cc, type: 3}
     Odds: 1
   RollOptionsList:
   - Title: 1
@@ -245,7 +246,8 @@ MonoBehaviour:
     Effects:
     - {fileID: 7835100483934819122, guid: 0e806bfcbf2435b489c9e0d52ddce99a, type: 3}
   EventOptionsList: []
-  TrapOptionsList: []
+  EffectTrap: {fileID: 7835100483934819122, guid: bfcce45ea843b2441b9460e0d50516a3,
+    type: 3}
   Effects: {fileID: 2718564955195390143}
   OpeningDirector: {fileID: 1852612993956569192}
   RollingDirector: {fileID: 4739342974202581508}
@@ -256,9 +258,9 @@ MonoBehaviour:
   UIPlayer1CoolDown: {fileID: 0}
   UIPlayer2CoolDown: {fileID: 0}
   CurrentGameState: 0
+  TempGameState: 0
   CurrentPlayer: 1
-  PlatformBlocks1: []
-  PlatformBlocks2: []
+  PlatformBlocks: []
   Player1Odds: []
   Player1OddsDelta: []
   Player1OddsLevel: 2
@@ -284,6 +286,7 @@ MonoBehaviour:
   - 16
   - 2
   - 2
+  StateBlock: 0
 --- !u!1 &7520866617332777310
 GameObject:
   m_ObjectHideFlags: 0
