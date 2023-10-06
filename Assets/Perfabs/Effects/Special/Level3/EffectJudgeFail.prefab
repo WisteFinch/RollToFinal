@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1653678900341096615}
-  - component: {fileID: 4968763008326391494}
+  - component: {fileID: 5867834236693728121}
   m_Layer: 0
-  m_Name: EffectRandom2Calamities
+  m_Name: EffectJudgeFail
   m_TagString: Effect
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4968763008326391494
+--- !u!114 &5867834236693728121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,16 +41,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7835100483934819122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c37ebe010a2e615478e749789dbc8dc9, type: 3}
+  m_Script: {fileID: 11500000, guid: c32e004133745344f958d27375ac8eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Calamities:
-  - {fileID: 7835100483934819122, guid: 56fb644ac28b21e4abc65d459359e74c, type: 3}
-  - {fileID: 7835100483934819122, guid: c7908ad1891f3a14cbb90179c0a8b733, type: 3}
-  - {fileID: 7835100483934819122, guid: f8b428d2286b10d4590e97a41c69d088, type: 3}
-  - {fileID: 7835100483934819122, guid: 5175b4ab3bbfe4e4bbe81033118db4db, type: 3}
-  - {fileID: 7835100483934819122, guid: fcb8f9bcb41d64043be3c86fb99ef91c, type: 3}
-  - {fileID: 7835100483934819122, guid: e132eb7e49a114249ac91aa9bcd0d4b3, type: 3}
-  - {fileID: 7835100483934819122, guid: df98a204c48fc924996996cfd41215e7, type: 3}
-  Desc: 
-  index: 0000000000000000
+  LifeCycle: 0
+  UUID: 

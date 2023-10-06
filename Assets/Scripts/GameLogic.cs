@@ -556,6 +556,10 @@ namespace RollToFinal
                     UpdateProgress();
                     DataSystem.Instance.SetData("Player1Reverse", 0);
                     DataSystem.Instance.SetData("Player2Reverse", 0);
+                    DataSystem.Instance.SetData("Player1JudgeBonus", 0);
+                    DataSystem.Instance.SetData("Player2JudgeBonus", 0);
+                    DataSystem.Instance.SetData("Player1JudgeBalance", 0);
+                    DataSystem.Instance.SetData("Player2JudgeBalance", 0);
                     PlayAndInvoke(OpeningDirector);
                     Player1SpecialRollCoolDown = Player2SpecialRollCoolDown = SpecialRollCoolDown;
                     UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
@@ -803,6 +807,11 @@ namespace RollToFinal
             }
         }
 
+        /// <summary>
+        /// 获取骰子结果
+        /// </summary>
+        /// <param name="odds">概率分布</param>
+        /// <returns>骰子结果</returns>
         private int GetRollResult(List<float> odds)
         {
             float sum = 0f;
@@ -870,14 +879,14 @@ namespace RollToFinal
                 // 获取点数&序号
                 int res = GetRollResult(Specialodds);
                 var index = UnityEngine.Random.Range(0, SpecialOptionsList[res - 1].Effects.Count);
-                DataSystem.Instance.SetData("RollResult", res);
+                DataSystem.Instance.SetData("RollResult", res - 1);
                 DataSystem.Instance.SetData("EffectIndex", index);
                 // 创建效果&设置UI
                 var perfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
                 effect.Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
-                effect.OnInstantiated(new object[] { res });
+                effect.OnInstantiated(new object[] { res - 1 });
                 if (CalcBalance(effect.Target, effect.Type))
                 {
                     UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {effect.Name}";
@@ -893,16 +902,27 @@ namespace RollToFinal
             }
         }
 
+        /// <summary>
+        /// 玩家判定
+        /// </summary>
+        /// <param name="player">玩家编号</param>
         public void PlayerJudge(int player)
         {
             EnableStateCheck = false;
             TempGameState = CurrentGameState;
             CurrentGameState = GameState.Judge;
+            int res;
+            int balance = player == 1 ? (int)DataSystem.Instance.GetData("Player1JudgeBalance") : (int)DataSystem.Instance.GetData("Player2JudgeBalance");
             // 获取点数
-            int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta") : GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
+            if (balance == 0)
+                res = GetRollResult(Specialodds) - 1;
+            else if (balance > 0)
+                res = 7;
+            else
+                res = 0;
             DataSystem.Instance.SetData("JudgeResult", res);
             // 设置UI
-            UITitle.text = "判定 : " + RollOptionsList[res - 1].Title;
+            UITitle.text = "判定 : " + RollOptionsList[res].Title;
             UIDescription.text = "";
 
             PlayAndInvoke(RollingDirector);

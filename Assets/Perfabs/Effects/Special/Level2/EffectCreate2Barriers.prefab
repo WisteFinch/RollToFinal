@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1653678900341096615}
-  - component: {fileID: 7815446358531683879}
+  - component: {fileID: 8965398827385385817}
   m_Layer: 0
-  m_Name: EffectLockOddsTo6
+  m_Name: EffectCreate2Barriers
   m_TagString: Effect
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7815446358531683879
+--- !u!114 &8965398827385385817
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,8 +41,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7835100483934819122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ed1824d8d2763e4187121acef7817c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dc93ff68cae26d49a71ebcb04518fff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeCycle: 0
-  TargetPlayer: 0
+  BarrierPerfab: {fileID: 7362363394570901005, guid: c9d6dccefa11f8747b64c3c46f916604,
+    type: 3}

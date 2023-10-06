@@ -3,20 +3,20 @@ using UnityEngine;
 
 namespace RollToFinal
 {
-    public class EffectRandom2Calamities : MonoBehaviour, IEffectBase
+    public class EffectRandomLucky : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "随机获得两个损耗效果"; }
+        public string Name { get => "随机获得一个增益效果"; }
         public string Description { get => Desc; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
 
         int IEffectBase.Target { get; set; }
 
-        public GameObject[] Calamities;
+        public GameObject[] Luckies;
 
         public string Desc;
 
-        public int[] index = new int[2];
+        public int index;
 
         IEffectBase.TurnStartCallBack Start;
 
@@ -29,27 +29,17 @@ namespace RollToFinal
             // 确认目标
             ((IEffectBase)this).Target = GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2;
             // 获取效果编号
-            index[0] = Random.Range(0, Calamities.Count());
-            do
-            {
-                index[1] = Random.Range(0, Calamities.Count());
-            } while (index[0] == index[1]);
+            index = Random.Range(0, Luckies.Count());
             // 设置介绍
-            Desc = $"{Calamities[index[0]].GetComponent<IEffectBase>().Name}\n{Calamities[index[1]].GetComponent<IEffectBase>().Name}";
+            Desc = $"{Luckies[index].GetComponent<IEffectBase>().Name}";
         }
 
         void IEffectBase.OnAssert()
         {
             // 产生效果
-            var perfab = Calamities[index[0]];
+            var perfab = Luckies[index];
             var obj = Instantiate(perfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
             var Effect = obj.GetComponent<IEffectBase>();
-            Effect.Register(ref Start, ref End, ref LC);
-            Effect.OnInstantiated(new object[] { 0 });
-            Effect.OnAssert();
-            perfab = Calamities[index[1]];
-            obj = Instantiate(perfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
-            Effect = obj.GetComponent<IEffectBase>();
             Effect.Register(ref Start, ref End, ref LC);
             Effect.OnInstantiated(new object[] { 0 });
             Effect.OnAssert();
