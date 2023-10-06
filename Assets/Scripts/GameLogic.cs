@@ -239,7 +239,7 @@ namespace RollToFinal
         /// <summary>
         /// UI:标题
         /// </summary>
-        public TextMeshProUGUI UITitle;
+        public Text UITitle;
 
         /// <summary>
         /// UI:介绍
@@ -380,7 +380,7 @@ namespace RollToFinal
         /// <summary>
         /// 玩家概率等级列表
         /// </summary>
-        private List<List<float>> PlayerOddsLevelList = new() { 
+        private readonly List<List<float>> PlayerOddsLevelList = new() { 
             new List<float>() { 100f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f, -1000f},  // 0级，全1
             new List<float>() { 100f, 100f, 100f, 100f, -1000f, -1000f, -1000f, -1000f },       // 1级，4面
             new List<float>() { 100f, 100f, 100f, 100f, 100f, 100f, -1000f, -1000f},            // 2级，6面（默认）
@@ -391,7 +391,7 @@ namespace RollToFinal
         /// <summary>
         /// 特殊骰子概率列表
         /// </summary>
-        private List<float> Specialodds = new() { 16f, 16f, 16f, 16f, 16f, 16f, 2f, 2f };
+        public List<float> Specialodds = new() { 16f, 16f, 16f, 16f, 16f, 16f, 2f, 2f };
 
         /// <summary>
         /// 回合开始委托
@@ -828,7 +828,7 @@ namespace RollToFinal
                 TempEffectInstance.GetComponent<IEffectBase>().OnInstantiated(new object[] { step, CurrentPlayer });
                 // 设置UI
                 UITitle.text = RollOptionsList[res - 1].Title;
-                UIDescription.text = RollOptionsList[res - 1].Description;
+                UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
 
                 PlayAndInvoke(RollingDirector);
             }
@@ -869,14 +869,14 @@ namespace RollToFinal
                 effect.OnInstantiated(new object[] { res });
                 if (CalcBalance(effect.Target, effect.Type))
                 {
-                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}";
+                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {effect.Name}";
                 }
                 else
                 {
-                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : <s>{SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Name}</s>";
+                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : <color=#aaaaaa>{effect.Name}</color>";
                     Destroy(TempEffectInstance);
                 }
-                UIDescription.text = SpecialOptionsList[res - 1].Effects[index].GetComponent<IEffectBase>().Description;
+                UIDescription.text = effect.Description;
 
                 PlayAndInvoke(RollingDirector);
             }

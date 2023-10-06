@@ -6,7 +6,7 @@ namespace RollToFinal
     public class EffectRandom2Calamities : MonoBehaviour, IEffectBase
     {
         public string Name { get => "随机获得两个损耗效果"; }
-        public string Description { get; }
+        public string Description { get => Desc; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 

@@ -275,6 +275,15 @@ MonoBehaviour:
   Player2LuckyBalance: 0
   Player2CalamityBalance: 0
   Player2Progress: 0
+  Specialodds:
+  - 16
+  - 16
+  - 16
+  - 16
+  - 16
+  - 16
+  - 2
+  - 2
 --- !u!1 &7520866617332777310
 GameObject:
   m_ObjectHideFlags: 0
