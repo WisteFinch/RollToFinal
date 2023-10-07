@@ -1,6 +1,7 @@
 using RollToFinal;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RollToFinal
@@ -29,6 +30,12 @@ namespace RollToFinal
         void IEffectBase.OnAssert()
         {
             // 使冲突效果失效
+            var effect = GameLogic.Instance.Effects.GetComponentsInChildren<EffectJudgeFail5>();
+            if(effect.Count() > 0)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
             var effect1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectJudgeSuccess>();
             foreach (var e in effect1)
             {

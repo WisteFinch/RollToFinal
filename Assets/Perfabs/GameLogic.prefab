@@ -206,6 +206,8 @@ MonoBehaviour:
     Effects:
     - {fileID: 7835100483934819122, guid: 0e806bfcbf2435b489c9e0d52ddce99a, type: 3}
     - {fileID: 7835100483934819122, guid: 41e876618ef9e154ab9e0e188c5ea77c, type: 3}
+    - {fileID: 7835100483934819122, guid: 726aa8137f957e044b9381a124c05f02, type: 3}
+    - {fileID: 7835100483934819122, guid: 3c0e1b0112dacb74c8566870e5984990, type: 3}
   - Title: 1
     Description: 
     Effects:

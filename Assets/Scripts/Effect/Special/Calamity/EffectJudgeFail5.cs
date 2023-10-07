@@ -1,17 +1,16 @@
 using RollToFinal;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace RollToFinal
 {
-    public class EffectJudgeFail : MonoBehaviour, IEffectBase
+    public class EffectJudgeFail5 : MonoBehaviour, IEffectBase
     {
         public string Name { get => "判定失败"; }
         public string Description { get => ""; }
 
-        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
+        IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 
         int IEffectBase.Target { get; set; }
 
@@ -31,15 +30,17 @@ namespace RollToFinal
         {
             // 使冲突效果失效
             var effect = GameLogic.Instance.Effects.GetComponentsInChildren<EffectJudgeFail5>();
-            if (effect.Count() > 0)
+            foreach (var e in effect)
             {
-                Destroy(this.gameObject);
-                return;
+                if (((IEffectBase)e).Target == ((IEffectBase)this).Target && e.UUID != this.UUID)
+                {
+                    ((IEffectBase)e).OnLapsed();
+                }
             }
             var effect1 = GameLogic.Instance.Effects.GetComponentsInChildren<EffectJudgeFail>();
             foreach (var e in effect1)
             {
-                if (((IEffectBase)e).Target == ((IEffectBase)this).Target && e.UUID != this.UUID)
+                if (((IEffectBase)e).Target == ((IEffectBase)this).Target)
                 {
                     ((IEffectBase)e).OnLapsed();
                 }
@@ -72,7 +73,7 @@ namespace RollToFinal
         private void OnLifeCycleCallBack()
         {
             LifeCycle++;
-            if (LifeCycle >= 4)
+            if (LifeCycle >= 10)
             {
                 ((IEffectBase)this).OnLapsed();
             }

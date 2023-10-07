@@ -3,16 +3,18 @@ using UnityEngine;
 
 namespace RollToFinal
 {
-    public class EffectAdd3Traps : MonoBehaviour, IEffectBase
+    public class EffectFireBall : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "前方生成三个陷阱"; }
+        public string Name { get => "召唤火球"; }
         public string Description { get => ""; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 
         int IEffectBase.Target { get; set; }
 
-        public GameObject Trap;
+        public GameObject Empty;
+
+        public int TargetIndex;
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -24,14 +26,12 @@ namespace RollToFinal
         {
             int count = 3;
             // 产生效果
-            int index = ((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress + 1 : GameLogic.Instance.Player2Progress + 1;
+            TargetIndex = (((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress) + Random.Range(1, 7);
+            int index = TargetIndex;
             while (count <= 0 && index <= GameLogic.Instance.Length)
             {
-                if (GameLogic.Instance.PlatformBlocks[index].GetComponent<Block>().Type == Block.BlockType.Normal)
-                {
-                    count--;
-                    GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Trap);
-                }
+                GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Empty);
+                count--;
                 index++;
             }
 
