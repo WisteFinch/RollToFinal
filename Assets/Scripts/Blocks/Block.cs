@@ -32,6 +32,7 @@ namespace RollToFinal
 
         private void Update()
         {
+            
         }
 
         public void Entry(float delay = 0)
@@ -42,6 +43,11 @@ namespace RollToFinal
         public void Escape(float delay = 0)
         {
             Invoke(nameof(PlayEscape), delay);
+        }
+
+        public void Boom(float delay = 0)
+        {
+            Invoke(nameof(PlayBoom), delay);
         }
 
         public void PlayHide()
@@ -57,6 +63,13 @@ namespace RollToFinal
         private void PlayEscape()
         {
             this.AddComponent<Rigidbody>();
+            gameObject.GetComponent<Animator>().Play("BlockEscape");
+        }
+
+        private void PlayBoom()
+        {
+            this.AddComponent<Rigidbody>();
+            this.GetComponent<Rigidbody>().AddForce(new(Random.Range(-1000, 1000), Random.Range(-1000, 1000), Random.Range(-1000, 1000)));
             gameObject.GetComponent<Animator>().Play("BlockEscape");
         }
 

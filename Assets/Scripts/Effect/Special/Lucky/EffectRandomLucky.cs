@@ -41,7 +41,7 @@ namespace RollToFinal
             var obj = Instantiate(perfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
             var Effect = obj.GetComponent<IEffectBase>();
             Effect.Register(ref Start, ref End, ref LC);
-            Effect.OnInstantiated(new object[] { 0 });
+            Effect.OnInstantiated(new object[] { 7 });
             Effect.OnAssert();
             // 使自身失效
             ((IEffectBase)this).OnLapsed();

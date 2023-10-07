@@ -604,16 +604,14 @@ namespace RollToFinal
                 case GameState.Moving:
                     if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Raffle)
                     {
+                        EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
-                        var rand = UnityEngine.Random.Range(0, EventOptionsList.Count);
-                        var effects = EventOptionsList[rand].Effects;
-                        var index = UnityEngine.Random.Range(0, effects.Count);
-                        var perfab = effects[index];
-                        var obj = Instantiate(perfab, CurrentPlayer == 1 ? Effects.transform.position : Player2.transform.position, Quaternion.identity, Effects.transform);
+                        var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
-                        UITitle.text = $"{EventOptionsList[rand].Title} : {effects[index].GetComponent<IEffectBase>().Name}";
-                        UIDescription.text = effects[index].GetComponent<IEffectBase>().Description;
+                        TempEffectInstance = obj;
+                        UITitle.text = obj.GetComponent<IEffectBase>().Name;
+                        UIDescription.text = obj.GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
                     }
                     else if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Trap)
@@ -651,7 +649,6 @@ namespace RollToFinal
                 // 切换玩家 -> 委托：清除失效效果
                 case GameState.SwitchPlayer:
                     CurrentGameState = GameState.DelegateLC;
-                    Debug.Log(233);
                     LifeCycleCallBack?.Invoke();
                     EnableStateCheck = true;
                     break;
@@ -886,7 +883,7 @@ namespace RollToFinal
                 DataSystem.Instance.SetData("RollResult", res - 1);
                 DataSystem.Instance.SetData("EffectIndex", index);
                 // 创建效果&设置UI
-                var perfab = SpecialOptionsList[(int)DataSystem.Instance.GetData("RollResult") - 1].Effects[(int)DataSystem.Instance.GetData("EffectIndex")];
+                var perfab = SpecialOptionsList[res - 1].Effects[index];
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
                 effect.Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);

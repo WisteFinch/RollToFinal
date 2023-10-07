@@ -24,8 +24,9 @@ namespace RollToFinal
         {
             int count = 3;
             // 产生效果
-            int index = ((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress + 1 : GameLogic.Instance.Player2Progress + 1;
-            while (count <= 0 && index <= GameLogic.Instance.Length)
+            int progress = ((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress;
+            int index = progress + 1;
+            while (count > 0 && index <= GameLogic.Instance.Length && index - progress <= 10)
             {
                 if (GameLogic.Instance.PlatformBlocks[index].GetComponent<Block>().Type == Block.BlockType.Normal)
                 {

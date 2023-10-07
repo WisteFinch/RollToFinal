@@ -45,4 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Empty: {fileID: 7362363394570901005, guid: 545ff63e2a82c18478b1c6cc766da44a, type: 3}
+  Normal: {fileID: 7362363394570901005, guid: d2ef8b943b92a184184ef06ef6137f0e, type: 3}
   TargetIndex: 0
+  LifeCycle: 0

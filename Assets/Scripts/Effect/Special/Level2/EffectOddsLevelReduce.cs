@@ -11,8 +11,6 @@ namespace RollToFinal
 
         int IEffectBase.Target { get; set; }
 
-        public int LifeCycle = 0;
-
         public GameObject EffectMove;
 
         void IEffectBase.OnInstantiated(object[] data)
@@ -31,6 +29,7 @@ namespace RollToFinal
                 {
                     var obj = Instantiate(EffectMove, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.transform);
                     obj.GetComponent<IEffectBase>().OnInstantiated(new object[] { 5, 2 });
+                    obj.GetComponent<IEffectBase>().OnAssert();
                 }
                 else
                     GameLogic.Instance.Player1OddsLevel--;
@@ -41,6 +40,7 @@ namespace RollToFinal
                 {
                     var obj = Instantiate(EffectMove, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.transform);
                     obj.GetComponent<IEffectBase>().OnInstantiated(new object[] { 5, 1 });
+                    obj.GetComponent<IEffectBase>().OnAssert();
                 }
                 else
                     GameLogic.Instance.Player2OddsLevel--;
