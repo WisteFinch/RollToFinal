@@ -210,7 +210,7 @@ namespace RollToFinal
         public List<OptionItem> EventOptionsList;
 
         /// <summary>
-        /// 陷阱方块选项列表
+        /// 陷阱方块效果
         /// </summary>
         public GameObject EffectTrap;
 
@@ -606,7 +606,9 @@ namespace RollToFinal
                     {
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
-                        var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
+                        int res = GetRollResult(new() { 1f, 1f, 1f }) - 1;
+                        int index = UnityEngine.Random.Range(0, EventOptionsList[res].Effects.Count);
+                        var obj = Instantiate(EventOptionsList[res].Effects[index], Effects.transform.position, Quaternion.identity, Effects.transform);
                         obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
