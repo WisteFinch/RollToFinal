@@ -456,6 +456,7 @@ namespace RollToFinal
         /// </summary>
         public void GeneratePlatform()
         {
+            float delay = 0f;
             // 销毁原有平台
             PlatformBlocks.Clear();
             foreach (var item in PlatformBlocks) {
@@ -467,14 +468,15 @@ namespace RollToFinal
                 SumPlatformBlocksOdds += item.Odds;
             }
             // 创建起点
-            AddBlock(BeginBlock);
+            AddBlock(BeginBlock, delay);
             // 创建平台
             for(int i = 1; i <= Length; i++)
             {
-                AddBlock(GenerateBlock());
+                delay += Time.fixedDeltaTime;
+                AddBlock(GenerateBlock(), delay);
             }
             // 创建终点
-            AddBlock(EndBlock);
+            AddBlock(EndBlock, delay + Time.fixedDeltaTime);
         }
 
         /// <summary>
@@ -499,11 +501,13 @@ namespace RollToFinal
         /// 平台添加方块
         /// </summary>
         /// <param name="perfab">方块预制体</param>
-        private void AddBlock(GameObject perfab)
+        private void AddBlock(GameObject perfab, float delay = -1)
         {
             GameObject obj = Instantiate(perfab, new Vector3(Platform.transform.position.x, Platform.transform.position.y, PlatformBlocks.Count + Platform.transform.position.z), Quaternion.identity, Platform.transform);
             obj.GetComponent<Block>().Index = PlatformBlocks.Count;
             PlatformBlocks.Add(obj);
+            if (delay != -1)
+                obj.GetComponent<Block>().Entry(delay);
         }
 
         /// <summary>
@@ -517,9 +521,9 @@ namespace RollToFinal
             int index = target.GetComponent<Block>().Index;
             obj = Instantiate(perfab, target.transform.position, Quaternion.identity, Platform.transform);
             obj.GetComponent<Block>().Index = index;
-            Destroy(PlatformBlocks[index]);
+            PlatformBlocks[index].GetComponent<Block>().Escape();
             PlatformBlocks[index] = obj;
-
+            PlatformBlocks[index].GetComponent<Block>().Entry();
         }
 
         #endregion
