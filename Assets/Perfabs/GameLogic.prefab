@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Length: 50
-  SpecialRollCoolDown: 0
+  SpecialRollCoolDown: 2
   Platform: {fileID: 0}
   Player1: {fileID: 0}
   Player2: {fileID: 0}
@@ -258,9 +258,27 @@ MonoBehaviour:
     - {fileID: 7835100483934819122, guid: 801a8f6a8b19a374ea5037445059c388, type: 3}
     - {fileID: 7835100483934819122, guid: fed97aefacf952742b70fcdd816d774d, type: 3}
     - {fileID: 7835100483934819122, guid: c03692ee42aafbf4abbc903e03c2dafc, type: 3}
-    - {fileID: 7835100483934819122, guid: de9b0171c160b7c44afccae1f316c04c, type: 3}
+    - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
     - {fileID: 7835100483934819122, guid: 3b65e8856cb28914186aaaeac29449fe, type: 3}
-  EventOptionsList: []
+  RaffleOptionsList:
+  - Title: "\u795D\u798F"
+    Description: 
+    Effects:
+    - {fileID: 7835100483934819122, guid: 46be73445b9e53f43b07951319a01230, type: 3}
+    - {fileID: 7835100483934819122, guid: 8c60d415f9f51a74b88cf809d602b763, type: 3}
+    - {fileID: 7835100483934819122, guid: 9d6aaa8fc2c85d649ac05ee4fa14d407, type: 3}
+    - {fileID: 7835100483934819122, guid: d5587688e5bfb38429dd5ddb3661a368, type: 3}
+    - {fileID: 7835100483934819122, guid: 2c20fac1c7d450e42a24a52a4ea8a7e3, type: 3}
+  - Title: "\u8BC5\u5492"
+    Description: 
+    Effects:
+    - {fileID: 7835100483934819122, guid: a71be3c64ee56f344baf6baa2421db4f, type: 3}
+    - {fileID: 7835100483934819122, guid: 5808e1ffc205a414199d4206ad36245d, type: 3}
+    - {fileID: 7835100483934819122, guid: 51f843a0eb3541341af100e8c872d895, type: 3}
+    - {fileID: 7835100483934819122, guid: f908863deb57fa142882b52715a360a8, type: 3}
+    - {fileID: 7835100483934819122, guid: d2c3c49aa7f42ef49aabdb9b634a1497, type: 3}
+  EffectRaffle: {fileID: 7835100483934819122, guid: e7e0971e358277f4e88633ef64caf0cb,
+    type: 3}
   EffectTrap: {fileID: 7835100483934819122, guid: bfcce45ea843b2441b9460e0d50516a3,
     type: 3}
   Effects: {fileID: 2718564955195390143}

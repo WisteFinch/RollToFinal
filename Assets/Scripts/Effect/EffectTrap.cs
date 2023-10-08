@@ -11,7 +11,7 @@ namespace RollToFinal
 
         int IEffectBase.Target { get; set; }
 
-        public GameObject TrapObj;
+        public GameObject BlockObj;
 
         public GameObject NormalPerfab;
 
@@ -28,15 +28,15 @@ namespace RollToFinal
             // 确认目标
             ((IEffectBase)this).Target = GameLogic.Instance.CurrentPlayer == 1 ? 1 : 2;
             // 设定阈值
-            TrapObj = GameLogic.Instance.PlatformBlocks[((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress];
-            var obj = TrapObj.GetComponent<Block>();
+            BlockObj = GameLogic.Instance.PlatformBlocks[((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress];
+            var obj = BlockObj.GetComponent<Block>();
             if (obj.Data.Count != 0)
                 Threshold = (int)obj.Data[0];
         }
-
+         
         void IEffectBase.OnAssert()
         {
-            GameLogic.Instance.ReplaceBlock(TrapObj, NormalPerfab);
+            GameLogic.Instance.ReplaceBlock(BlockObj, NormalPerfab);
             GameLogic.Instance.StateBlock++;
             GameLogic.Instance.PlayerJudge(((IEffectBase)this).Target);
             EnableCheck = true;

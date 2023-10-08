@@ -1204,7 +1204,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375804156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1675509, y: -0.2548955, z: 0.044895135, w: 0.95128304}
+  m_LocalRotation: {x: 0.1675509, y: -0.25489548, z: 0.044895124, w: 0.95128304}
   m_LocalPosition: {x: 5, y: 5, z: -8.6602545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2463,12 +2463,6 @@ PrefabInstance:
       propertyPath: PlayerMiddleViewCamera
       value: 
       objectReference: {fileID: 358456339}
-    - target: {fileID: 673484376557934374, guid: 147efd5d1ccfcd243975ded238a6958a,
-        type: 3}
-      propertyPath: SpecialOptionsList.Array.data[7].Effects.Array.data[3]
-      value: 
-      objectReference: {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9,
-        type: 3}
     - target: {fileID: 1852612993956569192, guid: 147efd5d1ccfcd243975ded238a6958a,
         type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value

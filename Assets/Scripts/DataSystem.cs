@@ -23,7 +23,7 @@ namespace RollToFinal
         /// <summary>
         /// 数据
         /// </summary>
-        private Dictionary<string, object> Data = new();
+        public Dictionary<string, object> Data = new();
 
         private void Awake()
         {

@@ -27,6 +27,9 @@ namespace RollToFinal
             int progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
             var platform = instance.PlatformBlocks;
 
+            if ((((IEffectBase)this).Target == 1 ? (int)DataSystem.Instance.GetData("Player1ForzenMove") : (int)DataSystem.Instance.GetData("Player2ForzenMove")) > 0)
+                Movement = 0;
+
             // 判断方块
             while (Movement > 0)
             {
