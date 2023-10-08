@@ -55,11 +55,11 @@ namespace RollToFinal
             // 产生效果
             if (((IEffectBase)this).Target == 1)
             {
-                DataSystem.Instance.SetData("Player1JudgeBalance", (int)DataSystem.Instance.GetData("Player1JudgeBalance") - 1);
+                DataSystem.Instance.SetData("Player1JudgeBalance", DataSystem.Instance.GetData("Player1JudgeBalance") - 1);
             }
             else
             {
-                DataSystem.Instance.SetData("Player2JudgeBalance", (int)DataSystem.Instance.GetData("Player2JudgeBalance") - 1);
+                DataSystem.Instance.SetData("Player2JudgeBalance", DataSystem.Instance.GetData("Player2JudgeBalance") - 1);
             }
         }
 
@@ -82,11 +82,11 @@ namespace RollToFinal
         {
             if (((IEffectBase)this).Target == 1)
             {
-                DataSystem.Instance.SetData("Player1JudgeBalance", (int)DataSystem.Instance.GetData("Player1JudgeBalance") + 1);
+                DataSystem.Instance.SetData("Player1JudgeBalance", DataSystem.Instance.GetData("Player1JudgeBalance") + 1);
             }
             else
             {
-                DataSystem.Instance.SetData("Player2JudgeBalance", (int)DataSystem.Instance.GetData("Player2JudgeBalance") + 1);
+                DataSystem.Instance.SetData("Player2JudgeBalance", DataSystem.Instance.GetData("Player2JudgeBalance") + 1);
             }
             Destroy(this.gameObject);
         }

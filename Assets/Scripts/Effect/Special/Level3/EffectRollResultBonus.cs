@@ -40,11 +40,11 @@ namespace RollToFinal
             // 产生效果
             if (((IEffectBase)this).Target == 1)
             {
-                DataSystem.Instance.SetData("Player1RollResultDelta", (int)DataSystem.Instance.GetData("Player1RollResultDelta") + 1);
+                DataSystem.Instance.SetData("Player1RollResultDelta", DataSystem.Instance.GetData("Player1RollResultDelta") + 1);
             }
             else
             {
-                DataSystem.Instance.SetData("Player2RollResultDelta", (int)DataSystem.Instance.GetData("Player2RollResultDelta") + 1);
+                DataSystem.Instance.SetData("Player2RollResultDelta", DataSystem.Instance.GetData("Player2RollResultDelta") + 1);
             }
         }
 
@@ -67,11 +67,11 @@ namespace RollToFinal
         {
             if (((IEffectBase)this).Target == 1)
             {
-                DataSystem.Instance.SetData("Player1RollResultDelta", (int)DataSystem.Instance.GetData("Player1RollResultDelta") - 1);
+                DataSystem.Instance.SetData("Player1RollResultDelta", DataSystem.Instance.GetData("Player1RollResultDelta") - 1);
             }
             else
             {
-                DataSystem.Instance.SetData("Player2RollResultDelta", (int)DataSystem.Instance.GetData("Player2RollResultDelta") - 1);
+                DataSystem.Instance.SetData("Player2RollResultDelta", DataSystem.Instance.GetData("Player2RollResultDelta") - 1);
             }
             Destroy(this.gameObject);
         }

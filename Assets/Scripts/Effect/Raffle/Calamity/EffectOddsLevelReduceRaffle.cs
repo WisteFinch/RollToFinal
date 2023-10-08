@@ -4,8 +4,8 @@ namespace RollToFinal
 {
     public class EffectOddsLevelReduceRaffle : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "诅咒I"; }
-        public string Description { get => "下一次特殊骰子必定为厄运"; }
+        public string Name { get => "诅咒II"; }
+        public string Description { get => "使骰子等级下降一级"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 

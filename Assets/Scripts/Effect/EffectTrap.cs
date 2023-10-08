@@ -47,8 +47,8 @@ namespace RollToFinal
             if (!EnableCheck)
                 return;
             // 判断是否产生判定结果
-            JudgeResult = (int)DataSystem.Instance.GetData("JudgeResult") + ((IEffectBase)this).Target == 1 ? (int)DataSystem.Instance.GetData("Player1JudgeBonus") : (int)DataSystem.Instance.GetData("Player2JudgeBonus");
-            DataSystem.Instance.SetData("JudgeResult", -1);
+            JudgeResult = GameLogic.Instance.JudgeResult + (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1JudgeBonus") : DataSystem.Instance.GetData("Player2JudgeBonus"));
+            GameLogic.Instance.JudgeResult = -1;
             if (JudgeResult == -1)
                 return;
             // 应用效果

@@ -51,7 +51,8 @@ namespace RollToFinal
                 flag = false;
                 EffectType = Random.Range(0, GameLogic.Instance.RaffleOptionsList.Count);
                 index = Random.Range(0, GameLogic.Instance.RaffleOptionsList[EffectType].Effects.Count);
-                EffectObj = GameLogic.Instance.RaffleOptionsList[EffectType].Effects[index];
+                var EffectPerfab = GameLogic.Instance.RaffleOptionsList[EffectType].Effects[index];
+                EffectObj = Instantiate(EffectPerfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
                 effect = EffectObj.GetComponent<IEffectBase>();
                 effect.Register(ref Start, ref End, ref LC);
                 effect.OnInstantiated();
@@ -60,7 +61,10 @@ namespace RollToFinal
                 if (EffectObj.TryGetComponent(out e1))
                 {
                     if (!e1.Enable)
+                    {
                         flag = true;
+                        Destroy(EffectObj);
+                    }
                 }
             } while (flag);
             
@@ -95,8 +99,8 @@ namespace RollToFinal
             if (!EnableCheck)
                 return;
             // 判断是否产生判定结果
-            JudgeResult = (int)DataSystem.Instance.GetData("JudgeResult") + ((IEffectBase)this).Target == 1 ? (int)DataSystem.Instance.GetData("Player1JudgeBonus") : (int)DataSystem.Instance.GetData("Player2JudgeBonus");
-            DataSystem.Instance.SetData("JudgeResult", -1);
+            JudgeResult = GameLogic.Instance.JudgeResult + (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1JudgeBonus") : DataSystem.Instance.GetData("Player2JudgeBonus"));
+            GameLogic.Instance.JudgeResult = -1;
             if (JudgeResult == -1)
                 return;
             // 应用效果
@@ -106,11 +110,12 @@ namespace RollToFinal
                 if(EffectType == 0)
                     effect.OnAssert();
                 else if(EffectType == 1)
-                    effect.OnLapsed();
-            }else
+                    Destroy(EffectObj);
+            }
+            else
             {
                 if (EffectType == 0)
-                    effect.OnLapsed();
+                    Destroy(EffectObj);
                 else if (EffectType == 1)
                     effect.OnAssert();
             }

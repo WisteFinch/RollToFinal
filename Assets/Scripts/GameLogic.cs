@@ -428,6 +428,11 @@ namespace RollToFinal
         /// </summary>
         public int StateBlock = 0;
 
+        /// <summary>
+        /// 判断结果
+        /// </summary>
+        public int JudgeResult = 0;
+
         private void Start()
         {
             GeneratePlatform();
@@ -587,44 +592,35 @@ namespace RollToFinal
                     // 计算特殊骰子冷却
                     if(CurrentPlayer == 1)
                     {
-                        if((int)DataSystem.Instance.GetData("Player1SpecialRollCount") == 0)
+                        if(DataSystem.Instance.GetData("Player1SpecialRollCount") == 0)
                         {
                             if (Player1SpecialRollCoolDown > 0)
                             {
                                 Player1SpecialRollCoolDown--;
                             }
-                            else
+                            if (Player1SpecialRollCoolDown <= 0)
                             {
                                 Player1SpecialRollCoolDown = SpecialRollCoolDown;
-                                DataSystem.Instance.SetData("Player1SpecialRollCount", (int)DataSystem.Instance.GetData("Player1SpecialRollCount") + 1);
+                                DataSystem.Instance.SetData("Player1SpecialRollCount", DataSystem.Instance.GetData("Player1SpecialRollCount") + 1);
                             }
-                            UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
-                        }
-                        else
-                        {
-                            UIPlayer1CoolDown.text = $"就绪({(int)DataSystem.Instance.GetData("Player1SpecialRollCount")})";
                         }
                     }
                     else
                     {
-                        if ((int)DataSystem.Instance.GetData("Player2SpecialRollCount") == 0)
+                        if (DataSystem.Instance.GetData("Player2SpecialRollCount") == 0)
                         {
                             if (Player2SpecialRollCoolDown > 0)
                             {
                                 Player2SpecialRollCoolDown--;
                             }
-                            else
+                            if (Player2SpecialRollCoolDown <= 0)
                             {
                                 Player2SpecialRollCoolDown = SpecialRollCoolDown;
-                                DataSystem.Instance.SetData("Player2SpecialRollCount", (int)DataSystem.Instance.GetData("Player2SpecialRollCount") + 1);
+                                DataSystem.Instance.SetData("Player2SpecialRollCount", DataSystem.Instance.GetData("Player2SpecialRollCount") + 1);
                             }
-                            UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
-                        }
-                        else
-                        {
-                            UIPlayer2CoolDown.text = $"就绪({(int)DataSystem.Instance.GetData("Player2SpecialRollCount")})";
                         }
                     }
+                    DrawCoolDown();
                     break;
                 // 委托：回合开始 -> 玩家闲置
                 case GameState.DelegateStart:
@@ -876,11 +872,11 @@ namespace RollToFinal
                 CurrentGameState = GameState.Rolling;
                 EnableStateCheck = false;
                 // 获取点数
-                int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + (int)DataSystem.Instance.GetData("Player1RollResultDelta"): GetRollResult(Player2Odds) + (int)DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
+                int res = Math.Clamp(player == 1 ? GetRollResult(Player1Odds) + DataSystem.Instance.GetData("Player1RollResultDelta"): GetRollResult(Player2Odds) + DataSystem.Instance.GetData("Player2RollResultDelta"), 0, 100);
                 DataSystem.Instance.SetData("RollResult", res);
                 // 创建效果
                 var perfab = RollOptionsList[res - 1].Effects[0];
-                var step = (int)DataSystem.Instance.GetData("RollResult");
+                var step = DataSystem.Instance.GetData("RollResult");
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 TempEffectInstance.GetComponent<IEffectBase>().OnInstantiated(new object[] { step, CurrentPlayer });
                 // 设置UI
@@ -898,24 +894,23 @@ namespace RollToFinal
         {
             if(CurrentPlayer == 1)
             {
-                if ((int)DataSystem.Instance.GetData("Player1SpecialRollCount") <= 0)
+                if (DataSystem.Instance.GetData("Player1SpecialRollCount") <= 0)
                     return;
-                DataSystem.Instance.SetData("Player1SpecialRollCount", (int)DataSystem.Instance.GetData("Player1SpecialRollCount") - 1);
-                UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+                DataSystem.Instance.SetData("Player1SpecialRollCount", DataSystem.Instance.GetData("Player1SpecialRollCount") - 1);
             }
             else
             {
-                if ((int)DataSystem.Instance.GetData("Player2SpecialRollCount") <= 0)
+                if (DataSystem.Instance.GetData("Player2SpecialRollCount") <= 0)
                     return;
-                DataSystem.Instance.SetData("Player2SpecialRollCount", (int)DataSystem.Instance.GetData("Player2SpecialRollCount") - 1);
-                UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
+                DataSystem.Instance.SetData("Player2SpecialRollCount", DataSystem.Instance.GetData("Player2SpecialRollCount") - 1);
             }
+            DrawCoolDown();
             if (player == CurrentPlayer && CurrentGameState == GameState.PlayerIdle)
             {
                 EnableStateCheck = false;
                 CurrentGameState = GameState.SpecialRolling;
                 // 获取点数&序号
-                int balance = player == 1 ? (int)DataSystem.Instance.GetData("Player1SpecialRollBalance") : (int)DataSystem.Instance.GetData("Player2SpecialRollBalance");
+                int balance = player == 1 ? DataSystem.Instance.GetData("Player1SpecialRollBalance") : DataSystem.Instance.GetData("Player2SpecialRollBalance");
                 int res;
                 if (balance == 0)
                 {
@@ -965,25 +960,25 @@ namespace RollToFinal
             CurrentGameState = GameState.Judge;
             // 获取点数
             int res;
-            int balance = player == 1 ? (int)DataSystem.Instance.GetData("Player1JudgeBalance") : (int)DataSystem.Instance.GetData("Player2JudgeBalance");
-            int protection = player == 1 ? (int)DataSystem.Instance.GetData("Player1JudgeProtection") : (int)DataSystem.Instance.GetData("Player2JudgeProtection");
+            int balance = player == 1 ? DataSystem.Instance.GetData("Player1JudgeBalance") : DataSystem.Instance.GetData("Player2JudgeBalance");
+            int protection = player == 1 ? DataSystem.Instance.GetData("Player1JudgeProtection") : DataSystem.Instance.GetData("Player2JudgeProtection");
             if (protection > 0)
             {
-                res = 7;
+                res = 6;
                 DataSystem.Instance.SetData(player == 1 ? "Player1JudgeProtection" : "Player2JudgeProtection", protection - 1);
             }
             else
             {
                 if (balance == 0)
-                    res = GetRollResult(Specialodds) - 1;
+                    res = UnityEngine.Random.Range(0, 6) + 1;
                 else if (balance > 0)
-                    res = 7;
+                    res = 6;
                 else
-                    res = 0;
+                    res = 1;
             }
-            DataSystem.Instance.SetData("JudgeResult", res);
+            JudgeResult = res;
             // 设置UI
-            UITitle.text = "判定 : " + RollOptionsList[res].Title;
+            UITitle.text = $"判定 : {res}";
             UIDescription.text = "";
 
             PlayAndInvoke(RollingDirector);
@@ -1019,17 +1014,17 @@ namespace RollToFinal
                 }
                 else if(type == IEffectBase.EffectType.Calamity)
                 {
-                    if ((int)DataSystem.Instance.GetData("Player1CalamityBalance") > 0)
+                    if (DataSystem.Instance.GetData("Player1CalamityBalance") > 0)
                     {
-                        DataSystem.Instance.SetData("Player1CalamityBalance", (int)DataSystem.Instance.GetData("Player1CalamityBalance") - 1);
+                        DataSystem.Instance.SetData("Player1CalamityBalance", DataSystem.Instance.GetData("Player1CalamityBalance") - 1);
                         return false;
                     }
                 }
                 else if (type == IEffectBase.EffectType.Lucky)
                 {
-                    if ((int)DataSystem.Instance.GetData("Player1LuckyBalance") > 0)
+                    if (DataSystem.Instance.GetData("Player1LuckyBalance") > 0)
                     {
-                        DataSystem.Instance.SetData("Player1LuckyBalance", (int)DataSystem.Instance.GetData("Player1LuckyBalance") - 1);
+                        DataSystem.Instance.SetData("Player1LuckyBalance", DataSystem.Instance.GetData("Player1LuckyBalance") - 1);
                         return false;
                     }
                 }
@@ -1054,22 +1049,43 @@ namespace RollToFinal
                 }
                 else if (type == IEffectBase.EffectType.Calamity)
                 {
-                    if ((int)DataSystem.Instance.GetData("Player2CalamityBalance") > 0)
+                    if (DataSystem.Instance.GetData("Player2CalamityBalance") > 0)
                     {
-                        DataSystem.Instance.SetData("Player2CalamityBalance", (int)DataSystem.Instance.GetData("Player2CalamityBalance") - 1);
+                        DataSystem.Instance.SetData("Player2CalamityBalance", DataSystem.Instance.GetData("Player2CalamityBalance") - 1);
                         return false;
                     }
                 }
                 else if (type == IEffectBase.EffectType.Lucky)
                 {
-                    if ((int)DataSystem.Instance.GetData("Player1LuckyBalance") > 0)
+                    if (DataSystem.Instance.GetData("Player1LuckyBalance") > 0)
                     {
-                        DataSystem.Instance.SetData("Player2LuckyBalance", (int)DataSystem.Instance.GetData("Player2LuckyBalance") - 1);
+                        DataSystem.Instance.SetData("Player2LuckyBalance", DataSystem.Instance.GetData("Player2LuckyBalance") - 1);
                         return false;
                     }
                 }
             }
             return true;
+        }
+
+        public void DrawCoolDown()
+        {
+            if (DataSystem.Instance.GetData("Player1SpecialRollCount") > 0)
+            {
+                UIPlayer1CoolDown.text = $"就绪({DataSystem.Instance.GetData("Player1SpecialRollCount")})";
+            }
+            else
+            {
+                UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+            }
+
+            if (DataSystem.Instance.GetData("Player2SpecialRollCount") > 0)
+            {
+                UIPlayer2CoolDown.text = $"就绪({DataSystem.Instance.GetData("Player2SpecialRollCount")})";
+            }
+            else
+            {
+                UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
+            }
         }
 
         #endregion

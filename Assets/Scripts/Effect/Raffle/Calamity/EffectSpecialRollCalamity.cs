@@ -20,7 +20,7 @@ namespace RollToFinal
         void IEffectBase.OnAssert()
         {
             // 产生效果
-            int count = (int)DataSystem.Instance.GetData(((IEffectBase)this).Target == 1 ? "Player1SpecialRollBalance" : "Player2SpecialRollBalance");
+            int count = DataSystem.Instance.GetData(((IEffectBase)this).Target == 1 ? "Player1SpecialRollBalance" : "Player2SpecialRollBalance");
             DataSystem.Instance.SetData(((IEffectBase)this).Target == 1 ? "Player1SpecialRollBalance" : "Player2SpecialRollBalance", count - 1);
             // 使自身失效
             ((IEffectBase)this).OnLapsed();
