@@ -29,15 +29,23 @@ namespace RollToFinal
         void IEffectBase.OnAssert()
         {
             // 产生效果
-            int count = 3;
+            GameLogic.Instance.StateBlock++;
             TargetIndex = (((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress) + Random.Range(1, 7);
+            GameLogic.Instance.Particles.getFireball(new(0, 10, TargetIndex + 1));
+            Invoke(nameof(ReplaceBlock), 3);
+        }
+
+        void ReplaceBlock()
+        {
+            int count = 3;
             int index = TargetIndex;
             while (count > 0 && index <= GameLogic.Instance.Length)
             {
-                GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Empty);
+                GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Empty, true);
                 count--;
                 index++;
             }
+            GameLogic.Instance.StateBlock--;
         }
 
         void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)

@@ -231,6 +231,10 @@ namespace RollToFinal
         /// </summary>
         private GameObject TempEffectInstance;
 
+        /// <summary>
+        /// 粒子系统
+        /// </summary>
+        public particlesC Particles;
 
         [Header("时间轴")]
         /// <summary>
@@ -272,7 +276,17 @@ namespace RollToFinal
         /// <summary>
         /// UI:玩家2特殊骰子冷却
         /// </summary>
-        public Text UIPlayer2CoolDown; 
+        public Text UIPlayer2CoolDown;
+
+        /// <summary>
+        /// GUI动画控制器
+        /// </summary>
+        public Animator GUIAnimator;
+
+        /// <summary>
+        /// GUI控制器
+        /// </summary>
+        public GUIController GUICTL;
 
         [Header("运行数据")]
 
@@ -440,6 +454,11 @@ namespace RollToFinal
         /// </summary>
         public int JudgeResult = 0;
 
+        /// <summary>
+        /// GUI状态
+        /// </summary>
+        public int GUIState = 0;
+
         private void Start()
         {
             GeneratePlatform();
@@ -532,13 +551,17 @@ namespace RollToFinal
         /// </summary>
         /// <param name="target">目标方块</param>
         /// <param name="perfab">预制体</param>
-        public void ReplaceBlock(GameObject target, GameObject perfab)
+        /// /// <param name="boom">爆炸效果</param>
+        public void ReplaceBlock(GameObject target, GameObject perfab, bool boom = false)
         {
             GameObject obj;
             int index = target.GetComponent<Block>().Index;
             obj = Instantiate(perfab, target.transform.position, Quaternion.identity, Platform.transform);
             obj.GetComponent<Block>().Index = index;
-            PlatformBlocks[index].GetComponent<Block>().Escape();
+            if (boom)
+                PlatformBlocks[index].GetComponent<Block>().Boom();
+            else
+                PlatformBlocks[index].GetComponent<Block>().Escape();
             PlatformBlocks[index] = obj;
             PlatformBlocks[index].GetComponent<Block>().Entry();
             BCCallBack?.Invoke();
@@ -739,6 +762,55 @@ namespace RollToFinal
             UITitle.text = $"Player {CurrentPlayer} Win!";
             PlayAndInvoke(RollingDirector);
         }
+
+        public void OnGUIStateChange()
+        {
+            switch(GUIState)
+            {
+                // 1 ：移动开始，标题进入
+                case 1:
+                    StateBlock++;
+                    GUIAnimator.SetTrigger("TitleEntry");
+                    GUIState = 2;
+                    break;
+                // 2 : 转盘进入
+                case 2:
+                    GUICTL.SetDivides(CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides);
+                    GUIAnimator.SetTrigger("CycleEntry");
+                    GUIState = 3;
+                    break;
+                // 3 : 开转
+                case 3:
+                    GUIState = 4;
+                    UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
+                    GUICTL.Roll(DataSystem.Instance.GetData("RollResult"));
+                    break;
+                // 4 : 转盘消失
+                case 4:
+                    GUIAnimator.SetTrigger("CycleEscape");
+                    GUIState = 5;
+                    break;
+                // 5 : 显示提示，等待
+                case 5:
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 6;
+                    break;
+                // 6 : 标题离开
+                case 6:
+                    GUIAnimator.SetTrigger("TitleEscape");
+                    GUIState = 7;
+                    break;
+                // 7 : 结束
+                case 7:
+                    StateBlock--;
+                    OnChangeState();
+                    GUIState = 0;
+                    break;
+                default:
+                    GUIState = 0;
+                    break;
+            }
+        }
         #endregion
 
         #region 玩家
@@ -888,10 +960,11 @@ namespace RollToFinal
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 TempEffectInstance.GetComponent<IEffectBase>().OnInstantiated(new object[] { step, CurrentPlayer });
                 // 设置UI
-                UITitle.text = RollOptionsList[res - 1].Title;
-                UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
+                UITitle.text = "移动";
+                UIDescription.text = "";
 
-                PlayAndInvoke(RollingDirector);
+                GUIState = 1;
+                OnGUIStateChange();
             }
         }
 

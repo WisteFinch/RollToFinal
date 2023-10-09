@@ -89,6 +89,7 @@ namespace RollToFinal
                 JumpProgress = 0f;
                 TimeProgress = Delay;
                 GameLogic.Instance.StateBlock--;
+                OnBlockChange();
                 return;
             }
             // 计算方向

@@ -137,7 +137,7 @@ namespace RollToFinal
         /// 填充起点
         /// </summary>
         [SerializeField]
-        Image.Origin360 m_originType;
+        float m_rotate = 90;
 
         /// <summary>
         /// 顺时针
@@ -175,14 +175,14 @@ namespace RollToFinal
             }
         }
 
-        public Image.Origin360 OriginType
+        public float Rotate
         {
-            get => m_originType;
+            get => m_rotate;
             set
             {
-                if (m_originType == value)
+                if (m_rotate == value)
                     return;
-                m_originType = value;
+                m_rotate = value;
                 SetOriginRadian();
                 SetVerticesDirty();
             }
@@ -347,21 +347,8 @@ namespace RollToFinal
         //m_originType改变的时候需要重新设置m_originRadian
         void SetOriginRadian()
         {
-            switch (m_originType)
-            {
-                case UnityEngine.UI.Image.Origin360.Left:
-                    m_originRadian = 0 * Mathf.Deg2Rad;
-                    break;
-                case UnityEngine.UI.Image.Origin360.Top:
-                    m_originRadian = 90 * Mathf.Deg2Rad;
-                    break;
-                case UnityEngine.UI.Image.Origin360.Right:
-                    m_originRadian = 180 * Mathf.Deg2Rad;
-                    break;
-                case UnityEngine.UI.Image.Origin360.Bottom:
-                    m_originRadian = 270 * Mathf.Deg2Rad;
-                    break;
-            }
+            m_originRadian = m_rotate * Mathf.Deg2Rad;
+                    
         }
 
         private void OnGUI()

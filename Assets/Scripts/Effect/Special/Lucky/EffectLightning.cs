@@ -27,7 +27,8 @@ namespace RollToFinal
             int progress = ((IEffectBase)this).Target == 1 ? GameLogic.Instance.Player1Progress : GameLogic.Instance.Player2Progress;
             int offset = Random.Range(1, 7);
             int index = Mathf.Clamp(progress + offset, 1, GameLogic.Instance.Length + 1);
-            GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Trap);
+            GameLogic.Instance.Particles.getLightning(new(0, 0, index));
+            GameLogic.Instance.ReplaceBlock(GameLogic.Instance.PlatformBlocks[index], Trap, true);
             GameLogic.Instance.PlatformBlocks[index].GetComponent<Block>().Data.Add(6);
             // 使自身失效
             ((IEffectBase)this).OnLapsed();

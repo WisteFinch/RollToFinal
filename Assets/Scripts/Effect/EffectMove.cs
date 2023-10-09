@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectMove : MonoBehaviour, IEffectBase
     {
         public string Name { get => "移动"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}移动{Movement}步"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
         int IEffectBase.Target { get; set; }
