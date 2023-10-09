@@ -42,7 +42,7 @@ namespace RollToFinal
             }
             end = start + Pie.Divides[index].ratio;
 
-            TargetRotation = - Random.Range(RandomStart, RandomEnd) * 360f + Random.Range(start / sum_ratio, end / sum_ratio) * 360 + Pie.Rotate;
+            TargetRotation = Random.Range(RandomStart, RandomEnd) * 360f + Random.Range(start / sum_ratio, end / sum_ratio) * 360f + 90;
             CurrentRotation = Pie.Rotate;
             EnableRoll = true;
         }

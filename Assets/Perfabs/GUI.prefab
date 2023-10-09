@@ -434,7 +434,7 @@ MonoBehaviour:
   m_fillAmount: 1
   Segments: 360
   m_rotate: 90
-  m_isClockwise: 1
+  m_isClockwise: 0
 --- !u!1 &3573549411795093371
 GameObject:
   m_ObjectHideFlags: 0

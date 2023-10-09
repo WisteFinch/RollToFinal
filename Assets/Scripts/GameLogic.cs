@@ -459,6 +459,8 @@ namespace RollToFinal
         /// </summary>
         public int GUIState = 0;
 
+        public int BlockEffectCheck = 0;
+
         private void Start()
         {
             GeneratePlatform();
@@ -619,6 +621,7 @@ namespace RollToFinal
                 case GameState.PlayerStart:
                     CurrentGameState = GameState.DelegateStart;
                     TurnStartCallBack?.Invoke();
+                    BlockEffectCheck = 0;
                     EnableStateCheck = true;
                     // 计算特殊骰子冷却
                     if(CurrentPlayer == 1)
@@ -653,9 +656,10 @@ namespace RollToFinal
                     }
                     DrawCoolDown();
                     break;
-                // 委托：回合开始 -> 玩家闲置
+                // 委托：回合开始 -> 方块效果
                 case GameState.DelegateStart:
-                    CurrentGameState = GameState.PlayerIdle;
+                    CurrentGameState = GameState.Moving;
+                    EnableStateCheck = true;
                     break;
                 // 掷骰子 -> 移动
                 case GameState.Rolling:
@@ -689,6 +693,12 @@ namespace RollToFinal
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = obj.GetComponent<IEffectBase>().Description;
                         PlayAndInvoke(RollingDirector);
+                    }
+                    if(BlockEffectCheck == 0)
+                    {
+                        BlockEffectCheck++;
+                        CurrentGameState = GameState.PlayerIdle;
+                        break;
                     }
                     else
                     {
@@ -783,7 +793,7 @@ namespace RollToFinal
                 case 3:
                     GUIState = 4;
                     UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
-                    GUICTL.Roll(DataSystem.Instance.GetData("RollResult"));
+                    GUICTL.Roll(DataSystem.Instance.GetData("RollResult") - 1);
                     break;
                 // 4 : 转盘消失
                 case 4:
@@ -806,6 +816,48 @@ namespace RollToFinal
                     OnChangeState();
                     GUIState = 0;
                     break;
+
+                // 1 ：特殊开始，标题进入
+                case 11:
+                    StateBlock++;
+                    GUIAnimator.SetTrigger("TitleEntry");
+                    GUIState = 12;
+                    break;
+                // 2 : 转盘进入
+                case 12:
+                    GUICTL.SetDivides(CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides);
+                    GUIAnimator.SetTrigger("CycleEntry");
+                    GUIState = 13;
+                    break;
+                // 3 : 开转
+                case 13:
+                    GUIState = 14;
+                    UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
+                    GUICTL.Roll(DataSystem.Instance.GetData("RollResult"));
+                    break;
+                // 4 : 转盘消失
+                case 14:
+                    GUIAnimator.SetTrigger("CycleEscape");
+                    GUIState = 15;
+                    break;
+                // 5 : 显示提示，等待
+                case 15:
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 16;
+                    break;
+                // 6 : 标题离开
+                case 16:
+                    GUIAnimator.SetTrigger("TitleEscape");
+                    GUIState = 17;
+                    break;
+                // 7 : 结束
+                case 17:
+                    StateBlock--;
+                    OnChangeState();
+                    GUIState = 0;
+                    break;
+
+
                 default:
                     GUIState = 0;
                     break;
@@ -822,14 +874,34 @@ namespace RollToFinal
                 CurrentPlayer = 1;
                 Player1Camera.SetActive(true);
                 Player2Camera.SetActive(false);
-                Input.SwitchCurrentActionMap("Player1");
+                if(DataSystem.Instance.EnableAI)
+                {
+                    if (DataSystem.Instance.UseJoyStick)
+                    {
+                        Input.SwitchCurrentActionMap("Player2Gamepad");
+                    }
+                    else
+                    {
+                        Input.SwitchCurrentActionMap("Player1");
+                    }
+                }
+                else
+                    Input.SwitchCurrentActionMap("Player1");
             }
             else if(player == 2)
             {
                 CurrentPlayer = 2;
                 Player1Camera.SetActive(false);
                 Player2Camera.SetActive(true);
-                Input.SwitchCurrentActionMap("Player2Keyboard");
+                if(DataSystem.Instance.UseJoyStick)
+                {
+                    Input.SwitchCurrentActionMap("Player2Gamepad");
+                }
+                else
+                {
+                    Input.SwitchCurrentActionMap("Player2Keyboard");
+                }
+
             }
         }
 
@@ -1026,7 +1098,8 @@ namespace RollToFinal
                 }
                 UIDescription.text = effect.Description;
 
-                PlayAndInvoke(RollingDirector);
+                GUIState = 11;
+                OnGUIStateChange();
             }
         }
 

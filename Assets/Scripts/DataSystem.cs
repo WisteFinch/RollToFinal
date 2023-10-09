@@ -25,6 +25,10 @@ namespace RollToFinal
         /// </summary>
         public Dictionary<string, int> Data = new();
 
+        public bool UseJoyStick = false;
+
+        public bool EnableAI = false;
+
         private void Awake()
         {
             // 创建单例
