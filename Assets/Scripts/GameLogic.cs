@@ -122,6 +122,8 @@ namespace RollToFinal
 
         public delegate void ChangeStateCallBack();
 
+        public delegate void BlockChangeCallBack();
+
         [Header("游戏参数")]
         public int Length = 200;
 
@@ -419,6 +421,11 @@ namespace RollToFinal
         public ChangeStateCallBack CSCallBack = null;
 
         /// <summary>
+        /// 方块改变委托
+        /// </summary>
+        public ChangeStateCallBack BCCallBack = null;
+
+        /// <summary>
         /// 启用状态检查
         /// </summary>
         private bool EnableStateCheck = false;
@@ -534,6 +541,7 @@ namespace RollToFinal
             PlatformBlocks[index].GetComponent<Block>().Escape();
             PlatformBlocks[index] = obj;
             PlatformBlocks[index].GetComponent<Block>().Entry();
+            BCCallBack?.Invoke();
         }
 
         #endregion
