@@ -486,6 +486,7 @@ namespace RollToFinal
         private void Update()
         {
             StateCheck();
+            UpdateProgress();
         }
 
         #region 平台
@@ -600,7 +601,6 @@ namespace RollToFinal
                     CurrentGameState = GameState.Opening;
                     Player1Progress = 0;
                     Player2Progress = 0;
-                    UpdateProgress();
                     //DataSystem.Instance.SetData("Player1Reverse", 0);
                     //DataSystem.Instance.SetData("Player2Reverse", 0);
                     //DataSystem.Instance.SetData("Player1JudgeBonus", 0);
@@ -681,7 +681,9 @@ namespace RollToFinal
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = obj.GetComponent<IEffectBase>().Description;
                         GUIState = 21;
+                        TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                         OnGUIStateChange();
+                        BlockEffectCheck++;
                     }
                     else if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Trap)
                     {
@@ -691,10 +693,12 @@ namespace RollToFinal
                         obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
-                        UITitle.text = "陷阱 : " + obj.GetComponent<IEffectBase>().Name;
-                        UIDescription.text = obj.GetComponent<IEffectBase>().Description;
+                        UITitle.text = obj.GetComponent<IEffectBase>().Name;
+                        UIDescription.text = "判定值大于3：骰子升级\n判定值小于等于3：骰子降级";
                         GUIState = 31;
+                        TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                         OnGUIStateChange();
+                        BlockEffectCheck++;
                     }
                     else
                     {
@@ -713,7 +717,6 @@ namespace RollToFinal
                     break;
                 // 方块效果 --> 委托：回合结束
                 case GameState.BlockEffect:
-                    TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                     if (BlockEffectCheck == 1)
                     {
                         CurrentGameState = GameState.PlayerIdle;
@@ -780,7 +783,19 @@ namespace RollToFinal
         public void Win()
         {
             CurrentGameState = GameState.Win;
-            UITitle.text = $"Player {CurrentPlayer} Win!";
+            UITitle.text = $"玩家{CurrentPlayer}胜利！";
+            EnableStateCheck = false;
+            StateBlock += 1000;
+            for(int i = 0; i < PlatformBlocks.Count - 1; i++)
+            {
+                PlatformBlocks[i].GetComponent<Block>().Boom(i * Time.fixedDeltaTime);
+            }
+            int count = UnityEngine.Random.Range(5, 10);
+            float r = 360f / count;
+            for(int i = 0; i < count; i++)
+            {
+                Vector3 pos = new(MathF.Sin())
+            }
             PlayAndInvoke(RollingDirector);
         }
 
@@ -902,11 +917,12 @@ namespace RollToFinal
                     break;
                 // 29 ：检查状态
                 case 29:
-                    OnChangeState();
                     GUIState = 22;
+                    OnGUIStateChange();
                     break;
                 // 22 : 转盘进入
                 case 22:
+                    TempEffectInstance.GetComponent<EffectRaffle>().CheckJudgeResult();
                     List<DrawPieChart.DivideItem> rdivs = new();
                     var rPie = CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides;
                     for (int i = 0; i < 6; i++)
@@ -945,19 +961,87 @@ namespace RollToFinal
                     Invoke(nameof(OnGUIStateChange), 2f);
                     GUIState = 26;
                     break;
-                // 16 : 标题离开
+                // 26 : 标题离开
                 case 26:
                     TempEffectInstance.GetComponent<EffectRaffle>().Execute();
                     GUIAnimator.SetTrigger("TitleEscape");
                     GUIState = 27;
                     break;
-                // 17 : 结束
+                // 27 : 结束
                 case 27:
                     StateBlock--;
                     OnChangeState();
                     GUIState = 0;
                     break;
-
+                // 31 ：陷阱开始，标题进入
+                case 31:
+                    StateBlock++;
+                    GUIAnimator.SetTrigger("TitleEntry");
+                    GUIState = 38;
+                    break;
+                // 38 ：等待
+                case 38:
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 39;
+                    break;
+                // 39 ：检查状态
+                case 39:
+                    GUIState = 32;
+                    OnGUIStateChange();
+                    break;
+                // 32 : 转盘进入
+                case 32:
+                    TempEffectInstance.GetComponent<EffectTrap>().CheckJudgeResult();
+                    List<DrawPieChart.DivideItem> tdivs = new();
+                    var tPie = CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        DrawPieChart.DivideItem item = tPie[i];
+                        item.title = (i + 1).ToString();
+                        item.ratio = 1f;
+                        tdivs.Add(item);
+                    }
+                    GUICTL.SetDivides(tdivs);
+                    UIDescription.text = "";
+                    GUIAnimator.SetTrigger("CycleEntry");
+                    GUIState = 33;
+                    break;
+                // 33 : 开转
+                case 33:
+                    GUIState = 34;
+                    GUICTL.Roll(Math.Clamp(TempEffectInstance.GetComponent<EffectTrap>().JudgeResult - 1, 0, 5));
+                    break;
+                // 34 : 转盘消失
+                case 34:
+                    UITitle.text = $"[{TempEffectInstance.GetComponent<EffectTrap>().JudgeResult}]{TempEffectInstance.GetComponent<IEffectBase>().Name}";
+                    GUIAnimator.SetTrigger("CycleEscape");
+                    GUIState = 35;
+                    break;
+                // 35 : 显示提示，等待
+                case 35:
+                    if (TempEffectInstance.GetComponent<EffectTrap>().JudgeResult > 3)
+                    {
+                        UIDescription.text = "判定值大于3：骰子升级";
+                    }
+                    else
+                    {
+                        UIDescription.text = "判定值小于等于3：骰子降级";
+                    }
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 36;
+                    break;
+                // 36 : 标题离开
+                case 36:
+                    TempEffectInstance.GetComponent<EffectTrap>().Execute();
+                    GUIAnimator.SetTrigger("TitleEscape");
+                    GUIState = 37;
+                    break;
+                // 37 : 结束
+                case 37:
+                    StateBlock--;
+                    OnChangeState();
+                    GUIState = 0;
+                    break;
 
                 default:
                     GUIState = 0;
@@ -1008,8 +1092,8 @@ namespace RollToFinal
 
         public void UpdateProgress()
         {
-            UIPlayer1Progess.text = Player1Progress.ToString();
-            UIPlayer2Progess.text = Player2Progress.ToString();
+            UIPlayer1Progess.text = "进度 : " + Player1Progress.ToString();
+            UIPlayer2Progess.text = "进度 : " + Player2Progress.ToString();
         }
 
         #endregion
@@ -1225,8 +1309,6 @@ namespace RollToFinal
                     res = 1;
             }
             JudgeResult = res;
-
-            OnGUIStateChange();
         }
 
 
@@ -1316,20 +1398,20 @@ namespace RollToFinal
         {
             if (DataSystem.Instance.GetData("Player1SpecialRollCount") > 0)
             {
-                UIPlayer1CoolDown.text = $"就绪({DataSystem.Instance.GetData("Player1SpecialRollCount")})";
+                UIPlayer1CoolDown.text = $"抽奖就绪({DataSystem.Instance.GetData("Player1SpecialRollCount")})";
             }
             else
             {
-                UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
+                UIPlayer1CoolDown.text = "抽奖冷却 : " + Player1SpecialRollCoolDown.ToString();
             }
 
             if (DataSystem.Instance.GetData("Player2SpecialRollCount") > 0)
             {
-                UIPlayer2CoolDown.text = $"就绪({DataSystem.Instance.GetData("Player2SpecialRollCount")})";
+                UIPlayer2CoolDown.text = $"抽奖就绪({DataSystem.Instance.GetData("Player2SpecialRollCount")})";
             }
             else
             {
-                UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
+                UIPlayer2CoolDown.text = "抽奖冷却 : " + Player2SpecialRollCoolDown.ToString();
             }
         }
 

@@ -19,6 +19,9 @@ namespace RollToFinal
 
         public bool EnableRoll = false;
 
+        public float MinSpeed = 10f;
+
+        public float LerpRatio = 0.95f;
         public void OnStateChange()
         {
             GameLogic.Instance.OnGUIStateChange();
@@ -51,7 +54,9 @@ namespace RollToFinal
         {
             if(EnableRoll)
             {
-                CurrentRotation = Mathf.MoveTowards(CurrentRotation, TargetRotation, Time.deltaTime * 500);
+
+                float lerp = Mathf.Lerp(TargetRotation - CurrentRotation, 0f, LerpRatio);
+                CurrentRotation = Mathf.MoveTowards(CurrentRotation, TargetRotation, Mathf.Clamp(lerp, MinSpeed * Time.deltaTime, float.MaxValue));
                 Pie.Rotate = CurrentRotation;
                 if(CurrentRotation == TargetRotation)
                 {

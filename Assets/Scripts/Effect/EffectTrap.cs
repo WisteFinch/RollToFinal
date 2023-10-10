@@ -36,41 +36,47 @@ namespace RollToFinal
          
         void IEffectBase.OnAssert()
         {
-            GameLogic.Instance.ReplaceBlock(BlockObj, NormalPerfab);
             GameLogic.Instance.StateBlock++;
             GameLogic.Instance.PlayerJudge(((IEffectBase)this).Target);
             EnableCheck = true;
         }
 
-        void CheckJudgeResult()
+        public void CheckJudgeResult()
         {
             if (!EnableCheck)
                 return;
             // 判断是否产生判定结果
             JudgeResult = GameLogic.Instance.JudgeResult + (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1JudgeBonus") : DataSystem.Instance.GetData("Player2JudgeBonus"));
             GameLogic.Instance.JudgeResult = -1;
+            EnableCheck = false;
             if (JudgeResult == -1)
                 return;
+            
+        }
+
+        public void Execute()
+        {
             // 应用效果
+            GameLogic.Instance.ReplaceBlock(BlockObj, NormalPerfab);
             GameLogic.Instance.CSCallBack -= CheckJudgeResult;
             if (JudgeResult > Threshold)
             {
-                if(((IEffectBase)this).Target == 1)
+                if (((IEffectBase)this).Target == 1)
                     GameLogic.Instance.Player1OddsLevelDelta++;
                 else
                     GameLogic.Instance.Player2OddsLevelDelta++;
             }
             else
             {
-                if(((IEffectBase)this).Target == 1)
+                if (((IEffectBase)this).Target == 1)
                     GameLogic.Instance.Player1OddsLevelDelta--;
                 else
                     GameLogic.Instance.Player2OddsLevelDelta--;
             }
             GameLogic.Instance.CalcOdds();
             GameLogic.Instance.StateBlock--;
-        }
 
+        }
         private void OnLifeCycleCallBack()
         {
             LifeCycle++;
@@ -82,7 +88,6 @@ namespace RollToFinal
 
         void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
         {
-            GameLogic.Instance.CSCallBack += CheckJudgeResult;
             lc += OnLifeCycleCallBack;
         }
 

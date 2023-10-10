@@ -91,16 +91,16 @@ namespace RollToFinal
             GameLogic.Instance.StateBlock++;
             GameLogic.Instance.PlayerJudge(((IEffectBase)this).Target);
             EnableCheck = true;
-            GameLogic.Instance.OnGUIStateChange();
         }
 
-        void CheckJudgeResult()
+        public void CheckJudgeResult()
         {
             if (!EnableCheck)
                 return;
             // 判断是否产生判定结果
             JudgeResult = GameLogic.Instance.JudgeResult + (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1JudgeBonus") : DataSystem.Instance.GetData("Player2JudgeBonus"));
             GameLogic.Instance.JudgeResult = -1;
+            EnableCheck = false;
             if (JudgeResult == -1)
                 return;
         }
@@ -134,7 +134,6 @@ namespace RollToFinal
             Start = start;
             End = end;
             LC = lc;
-            GameLogic.Instance.CSCallBack += CheckJudgeResult;
         }
 
         void IEffectBase.OnLapsed()

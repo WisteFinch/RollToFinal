@@ -147,12 +147,19 @@ namespace RollToFinal
                 // 计算跳跃类型
                 var currentBlock = GameLogic.Instance.PlatformBlocks[playerProgress].GetComponent<Block>().Type;
                 var nextBlock = GameLogic.Instance.PlatformBlocks[playerProgress + dir].GetComponent<Block>().Type;
-                if((currentBlock != Block.BlockType.Barrier && nextBlock != Block.BlockType.Barrier) || (currentBlock == Block.BlockType.Barrier && nextBlock == Block.BlockType.Barrier))
+                if(currentBlock != Block.BlockType.Barrier && nextBlock != Block.BlockType.Barrier)
                 {
                     CurrentMovementDelta = 1;
                     Capable = true;
                     Pos = new(Pos.x, Jump0To0(JumpProgress), playerProgress + JumpProgress * dir);
-                } else if(currentBlock == Block.BlockType.Barrier && nextBlock != Block.BlockType.Barrier)
+                } 
+                else if (currentBlock == Block.BlockType.Barrier && nextBlock == Block.BlockType.Barrier)
+                {
+                    CurrentMovementDelta = 1;
+                    Capable = true;
+                    Pos = new(Pos.x, Jump0To0(JumpProgress) + 3, playerProgress + JumpProgress * dir);
+                }
+                else if(currentBlock == Block.BlockType.Barrier && nextBlock != Block.BlockType.Barrier)
                 {
                     CurrentMovementDelta = 1;
                     Capable = true;
@@ -185,7 +192,7 @@ namespace RollToFinal
             var block = GameLogic.Instance.PlatformBlocks[playerProgress].GetComponent<Block>().Type;
             if (block == Block.BlockType.Barrier)
             {
-                Pos = new(Pos.x, 0, playerProgress);
+                Pos = new(Pos.x, 3, playerProgress);
             }
             else if (block == Block.BlockType.Empty)
             {
