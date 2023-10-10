@@ -8,7 +8,7 @@ namespace RollToFinal
     public class EffectRollResultBonus : MonoBehaviour, IEffectBase
     {
         public string Name { get => "点数奖励"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的点数+1，持续3回合"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
@@ -17,6 +17,8 @@ namespace RollToFinal
         public int LifeCycle = 0;
 
         public string UUID;
+
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -48,9 +50,9 @@ namespace RollToFinal
             }
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -59,6 +61,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 6)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

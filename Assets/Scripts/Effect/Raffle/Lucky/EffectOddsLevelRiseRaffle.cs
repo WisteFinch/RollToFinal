@@ -38,7 +38,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

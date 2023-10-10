@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace RollToFinal
@@ -417,17 +418,17 @@ namespace RollToFinal
         /// <summary>
         /// 回合开始委托
         /// </summary>
-        private IEffectBase.TurnStartCallBack TurnStartCallBack = null;
+        public TurnStartCallBack TurnStartCallBack = null;
 
         /// <summary>
         /// 回合结束委托
         /// </summary>
-        private IEffectBase.TurnEndCallBack TurnEndCallBack = null;
+        public TurnEndCallBack TurnEndCallBack = null;
 
         /// <summary>
         /// 清除失效效果委托
         /// </summary>
-        private IEffectBase.LifeCycleCallBack LifeCycleCallBack = null;
+        public LifeCycleCallBack LifeCycleCallBack = null;
 
         /// <summary>
         /// 游戏状态改变委托
@@ -598,9 +599,12 @@ namespace RollToFinal
             switch (CurrentGameState)
             {
                 case GameState.GameStart:
+                    DataSystem.Instance.ClearData();
                     CurrentGameState = GameState.Opening;
                     Player1Progress = 0;
                     Player2Progress = 0;
+                    Player1SpecialRollCoolDown = Player2SpecialRollCoolDown = SpecialRollCoolDown;
+                    DrawCoolDown();
                     //DataSystem.Instance.SetData("Player1Reverse", 0);
                     //DataSystem.Instance.SetData("Player2Reverse", 0);
                     //DataSystem.Instance.SetData("Player1JudgeBonus", 0);
@@ -608,12 +612,10 @@ namespace RollToFinal
                     //DataSystem.Instance.SetData("Player1JudgeBalance", 0);
                     //DataSystem.Instance.SetData("Player2JudgeBalance", 0);
                     PlayAndInvoke(OpeningDirector);
-                    Player1SpecialRollCoolDown = Player2SpecialRollCoolDown = SpecialRollCoolDown;
-                    UIPlayer1CoolDown.text = Player1SpecialRollCoolDown.ToString();
-                    UIPlayer2CoolDown.text = Player2SpecialRollCoolDown.ToString();
                     break;
                 // 开场运镜 -> 玩家开始
                 case GameState.Opening:
+                    SwitchPlayer(1);
                     CurrentGameState = GameState.PlayerStart;
                     EnableStateCheck = true;
                     break;
@@ -675,7 +677,7 @@ namespace RollToFinal
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
                         var obj = Instantiate(EffectRaffle, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().Register();
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
@@ -690,11 +692,11 @@ namespace RollToFinal
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
                         var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
+                        obj.GetComponent<IEffectBase>().Register();
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
-                        UIDescription.text = "判定值大于3：骰子升级\n判定值小于等于3：骰子降级";
+                        UIDescription.text = "判定值大于3：概率升级\n判定值小于等于3：概率降级";
                         GUIState = 31;
                         TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                         OnGUIStateChange();
@@ -784,19 +786,38 @@ namespace RollToFinal
         {
             CurrentGameState = GameState.Win;
             UITitle.text = $"玩家{CurrentPlayer}胜利！";
+            UIDescription.text = "";
             EnableStateCheck = false;
             StateBlock += 1000;
             for(int i = 0; i < PlatformBlocks.Count - 1; i++)
             {
                 PlatformBlocks[i].GetComponent<Block>().Boom(i * Time.fixedDeltaTime);
             }
-            int count = UnityEngine.Random.Range(5, 10);
+            int count = UnityEngine.Random.Range(3, 7);
             float r = 360f / count;
             for(int i = 0; i < count; i++)
             {
-                Vector3 pos = new(MathF.Sin())
+                Vector3 pos = new(MathF.Sin(Mathf.Deg2Rad * i * r) * 30, 0, MathF.Cos(Mathf.Deg2Rad * i * r) * 30);
+                Particles.getFirework(pos);
             }
-            PlayAndInvoke(RollingDirector);
+            GUIAnimator.SetTrigger("TitleEntry");
+            if (CurrentPlayer == 1)
+            {
+                Player2.GetComponent<PlayerController>().enabled = false;
+                Player2.AddComponent<Rigidbody>();
+            }
+            else
+            {
+                Player1.GetComponent<PlayerController>().enabled = false;
+                Player1.AddComponent<Rigidbody>();
+            }
+                
+            Invoke(nameof(BackToMenu), 10f);
+        }
+
+        public void BackToMenu()
+        {
+            SceneManager.LoadScene(0);
         }
 
         public void OnGUIStateChange()
@@ -876,12 +897,12 @@ namespace RollToFinal
                     int res = DataSystem.Instance.GetData("RollResult");
                     if (CalcBalance(effect.Target, effect.Type))
                     {
-                        UITitle.text = $"[{SpecialOptionsList[res - 1].Title}]抽奖 : {effect.Name}";
+                        UITitle.text = $"[{SpecialOptionsList[res].Title}]抽奖 : {effect.Name}";
                         UIDescription.text = effect.Description;
                     }
                     else
                     {
-                        UITitle.text = $"[{SpecialOptionsList[res - 1].Title}]抽奖 : {effect.Name}";
+                        UITitle.text = $"[{SpecialOptionsList[res].Title}]抽奖 : {effect.Name}";
                         UIDescription.text = "该效果已被抵消";
                         Destroy(TempEffectInstance);
                     }
@@ -1021,11 +1042,11 @@ namespace RollToFinal
                 case 35:
                     if (TempEffectInstance.GetComponent<EffectTrap>().JudgeResult > 3)
                     {
-                        UIDescription.text = "判定值大于3：骰子升级";
+                        UIDescription.text = "判定值大于3：概率升级";
                     }
                     else
                     {
-                        UIDescription.text = "判定值小于等于3：骰子降级";
+                        UIDescription.text = "判定值小于等于3：概率降级";
                     }
                     Invoke(nameof(OnGUIStateChange), 2f);
                     GUIState = 36;
@@ -1059,9 +1080,9 @@ namespace RollToFinal
                 CurrentPlayer = 1;
                 Player1Camera.SetActive(true);
                 Player2Camera.SetActive(false);
-                if(DataSystem.Instance.EnableAI)
+                if(Transfer.Instance.EnableAI)
                 {
-                    if (DataSystem.Instance.UseJoyStick)
+                    if (Transfer.Instance.UseJoyStick)
                     {
                         Input.SwitchCurrentActionMap("Player2Gamepad");
                     }
@@ -1078,7 +1099,7 @@ namespace RollToFinal
                 CurrentPlayer = 2;
                 Player1Camera.SetActive(false);
                 Player2Camera.SetActive(true);
-                if(DataSystem.Instance.UseJoyStick)
+                if(Transfer.Instance.UseJoyStick)
                 {
                     Input.SwitchCurrentActionMap("Player2Gamepad");
                 }
@@ -1270,7 +1291,7 @@ namespace RollToFinal
                 var perfab = SpecialOptionsList[res - 1].Effects[index];
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
-                effect.Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
+                effect.Register();
                 effect.OnInstantiated(new object[] { res - 1 });
 
                 UITitle.text = "抽奖";

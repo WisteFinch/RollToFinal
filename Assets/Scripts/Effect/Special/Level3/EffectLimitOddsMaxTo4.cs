@@ -4,8 +4,8 @@ namespace RollToFinal
 {
     public class EffectLimitOddsMaxTo4 : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "降低骰子上限至4"; }
-        public string Description { get => ""; }
+        public string Name { get => "降低点数上限至4"; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的点数上限降至4，持续2回合"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
 
@@ -14,6 +14,7 @@ namespace RollToFinal
         public int LifeCycle = 0;
 
         public string UUID;
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -60,9 +61,9 @@ namespace RollToFinal
             GameLogic.Instance.CalcOdds();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -71,6 +72,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 4)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

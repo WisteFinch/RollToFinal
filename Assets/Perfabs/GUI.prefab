@@ -357,7 +357,7 @@ MonoBehaviour:
   - color: {r: 0.9411765, g: 0.972549, b: 1, a: 1}
     ratio: 0
     title: 10
-  TextRadiusOffset: 10
+  TextRadiusOffset: -20
   ShowDividesRatio: 0
   DivideRatioColor: {r: 1, g: 1, b: 1, a: 1}
   TextStyle:
@@ -415,7 +415,7 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 15
+    m_FontSize: 20
     m_FontStyle: 0
     m_Alignment: 4
     m_WordWrap: 0
@@ -828,10 +828,10 @@ MonoBehaviour:
   - color: {r: 1, g: 0.27058825, b: 0, a: 1}
     ratio: 0
     title: 4
-  - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
+  - color: {r: 0.8490566, g: 0.34312263, b: 0.25231397, a: 1}
     ratio: 0
     title: 5
-  - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
+  - color: {r: 0.9811321, g: 0.47497174, b: 0.38412246, a: 1}
     ratio: 0
     title: 6
   - color: {r: 0.9411765, g: 0.5019608, b: 0.5019608, a: 1}
@@ -954,7 +954,7 @@ MonoBehaviour:
   - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
     ratio: 0
     title: 5
-  - color: {r: 1, g: 0.3882353, b: 0.2784314, a: 1}
+  - color: {r: 0.990566, g: 0.47953877, b: 0.38781592, a: 1}
     ratio: 0
     title: 6
   - color: {r: 0.9411765, g: 0.5019608, b: 0.5019608, a: 1}

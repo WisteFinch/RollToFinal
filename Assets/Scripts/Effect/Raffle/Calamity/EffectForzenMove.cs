@@ -13,6 +13,8 @@ namespace RollToFinal
 
         int IEffectBase.Target { get; set; }
 
+
+
         void IEffectBase.OnInstantiated(object[] data)
         {
             // 确认目标
@@ -25,9 +27,9 @@ namespace RollToFinal
             DataSystem.Instance.SetData(((IEffectBase)this).Target == 1 ? "Player1ForzenMove" : "Player2ForzenMove", 1);
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -36,6 +38,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 2)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

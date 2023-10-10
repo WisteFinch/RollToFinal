@@ -18,12 +18,6 @@ namespace RollToFinal
 
         public int[] index = new int[2];
 
-        IEffectBase.TurnStartCallBack Start;
-
-        IEffectBase.TurnEndCallBack End;
-
-        IEffectBase.LifeCycleCallBack LC;
-
         void IEffectBase.OnInstantiated(object[] data)
         {
             // 确认目标
@@ -44,24 +38,21 @@ namespace RollToFinal
             var perfab = Calamities[index[0]];
             var obj = Instantiate(perfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
             var Effect = obj.GetComponent<IEffectBase>();
-            Effect.Register(ref Start, ref End, ref LC);
+            Effect.Register();
             Effect.OnInstantiated(new object[] { 0 });
             Effect.OnAssert();
             perfab = Calamities[index[1]];
             obj = Instantiate(perfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
             Effect = obj.GetComponent<IEffectBase>();
-            Effect.Register(ref Start, ref End, ref LC);
+            Effect.Register();
             Effect.OnInstantiated(new object[] { 0 });
             Effect.OnAssert();
             // 使自身失效
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            Start = start;
-            End = end;
-            LC = lc;
             return;
         }
 

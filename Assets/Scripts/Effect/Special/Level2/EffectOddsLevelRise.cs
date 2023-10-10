@@ -4,8 +4,8 @@ namespace RollToFinal
 {
     public class EffectOddsLevelRise : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "骰子升级"; }
-        public string Description { get => ""; }
+        public string Name { get => "概率升级"; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的概率升级"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
@@ -51,7 +51,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectCreate1Barrier : MonoBehaviour, IEffectBase
     {
         public string Name { get => "创建一个障碍"; }
-        public string Description { get => ""; }
+        public string Description { get => $"在玩家{((IEffectBase)this).Target}前创造一个障碍"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
 
@@ -34,7 +34,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

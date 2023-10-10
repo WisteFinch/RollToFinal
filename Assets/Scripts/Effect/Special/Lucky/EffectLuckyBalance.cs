@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectLuckyBalance : MonoBehaviour, IEffectBase
     {
         public string Name { get => "抵消下一次增益"; }
-        public string Description { get => ""; }
+        public string Description { get => $"抵消玩家{((IEffectBase)this).Target}的下一次增益效果"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 
@@ -32,7 +32,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

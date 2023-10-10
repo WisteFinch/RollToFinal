@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectRiseOddsLevelTo6 : MonoBehaviour, IEffectBase
     {
         public string Name { get => "全6点数"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的点数强制为6，持续1回合"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
@@ -14,6 +14,8 @@ namespace RollToFinal
         public int LifeCycle = 0;
 
         public string UUID;
+
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -55,9 +57,9 @@ namespace RollToFinal
             GameLogic.Instance.CalcOdds();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -66,6 +68,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 2)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08cb158a44f2d3148b12660ea1a02cbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Length: 50
+  Length: 100
   SpecialRollCoolDown: 2
   Platform: {fileID: 0}
   Player1: {fileID: 0}
@@ -231,6 +231,14 @@ MonoBehaviour:
     - {fileID: 7835100483934819122, guid: 13bc3ade579d35742969b2a47b1c28b7, type: 3}
     - {fileID: 7835100483934819122, guid: 56fb644ac28b21e4abc65d459359e74c, type: 3}
     - {fileID: 7835100483934819122, guid: df98a204c48fc924996996cfd41215e7, type: 3}
+  - Title: "\u5E78\u8FD0"
+    Description: 
+    Effects:
+    - {fileID: 7835100483934819122, guid: 801a8f6a8b19a374ea5037445059c388, type: 3}
+    - {fileID: 7835100483934819122, guid: fed97aefacf952742b70fcdd816d774d, type: 3}
+    - {fileID: 7835100483934819122, guid: c03692ee42aafbf4abbc903e03c2dafc, type: 3}
+    - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
+    - {fileID: 7835100483934819122, guid: 3b65e8856cb28914186aaaeac29449fe, type: 3}
   - Title: 4
     Description: 
     Effects:
@@ -253,14 +261,6 @@ MonoBehaviour:
     - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
     - {fileID: 7835100483934819122, guid: fcb8f9bcb41d64043be3c86fb99ef91c, type: 3}
     - {fileID: 7835100483934819122, guid: 9808ff7029e824642b3cdcf03669382c, type: 3}
-  - Title: "\u5E78\u8FD0"
-    Description: 
-    Effects:
-    - {fileID: 7835100483934819122, guid: 801a8f6a8b19a374ea5037445059c388, type: 3}
-    - {fileID: 7835100483934819122, guid: fed97aefacf952742b70fcdd816d774d, type: 3}
-    - {fileID: 7835100483934819122, guid: c03692ee42aafbf4abbc903e03c2dafc, type: 3}
-    - {fileID: 7835100483934819122, guid: 185be44111d3ff645b3c1857a60b4bd9, type: 3}
-    - {fileID: 7835100483934819122, guid: 3b65e8856cb28914186aaaeac29449fe, type: 3}
   RaffleOptionsList:
   - Title: "\u795D\u798F"
     Description: 
@@ -293,6 +293,7 @@ MonoBehaviour:
   UIPlayer1CoolDown: {fileID: 0}
   UIPlayer2CoolDown: {fileID: 0}
   GUIAnimator: {fileID: 0}
+  GUICTL: {fileID: 0}
   CurrentGameState: 0
   TempGameState: 0
   CurrentPlayer: 1
@@ -318,13 +319,14 @@ MonoBehaviour:
   - 16
   - 16
   - 16
-  - 16
-  - 16
-  - 16
   - 2
+  - 16
+  - 16
+  - 16
   StateBlock: 0
   JudgeResult: 0
   GUIState: 0
+  BlockEffectCheck: 0
 --- !u!1 &7520866617332777310
 GameObject:
   m_ObjectHideFlags: 0

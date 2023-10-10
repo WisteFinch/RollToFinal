@@ -9,7 +9,7 @@ namespace RollToFinal
     public class EffectJudgeSuccess : MonoBehaviour, IEffectBase
     {
         public string Name { get => "判定成功"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的下一次判定必定成功"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
@@ -18,6 +18,8 @@ namespace RollToFinal
         public int LifeCycle = 0;
 
         public string UUID;
+
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -63,9 +65,9 @@ namespace RollToFinal
             }
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -74,6 +76,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 4)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

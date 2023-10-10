@@ -30,12 +30,6 @@ namespace RollToFinal
 
         private string _desc;
 
-        IEffectBase.TurnStartCallBack Start;
-
-        IEffectBase.TurnEndCallBack End;
-
-        IEffectBase.LifeCycleCallBack LC;
-
         void IEffectBase.OnInstantiated(object[] data)
         {
             // 确认目标
@@ -54,7 +48,7 @@ namespace RollToFinal
                 var EffectPerfab = GameLogic.Instance.RaffleOptionsList[EffectType].Effects[index];
                 EffectObj = Instantiate(EffectPerfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
                 effect = EffectObj.GetComponent<IEffectBase>();
-                effect.Register(ref Start, ref End, ref LC);
+                effect.Register();
                 effect.OnInstantiated();
 
                 EffectReverseRaffle e1;
@@ -129,11 +123,8 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            Start = start;
-            End = end;
-            LC = lc;
         }
 
         void IEffectBase.OnLapsed()

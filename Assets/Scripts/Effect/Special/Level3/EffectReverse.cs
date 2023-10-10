@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectReverse : MonoBehaviour, IEffectBase
     {
         public string Name { get => "方向反转"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的前进方向反转，持续2回合"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
 
@@ -14,6 +14,8 @@ namespace RollToFinal
         public int LifeCycle = 0;
 
         public string UUID;
+
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -53,9 +55,9 @@ namespace RollToFinal
             }
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -64,6 +66,7 @@ namespace RollToFinal
             LifeCycle++;
             if(LifeCycle >= 4)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
                 

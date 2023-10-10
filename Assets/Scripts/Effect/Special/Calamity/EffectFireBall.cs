@@ -5,8 +5,8 @@ namespace RollToFinal
 {
     public class EffectFireBall : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "召唤火球"; }
-        public string Description { get => ""; }
+        public string Name { get => "火球"; }
+        public string Description { get => $"在玩家{((IEffectBase)this).Target}面前生成一个火球，破坏3个方块\n三回合后方块将自动修复"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 
@@ -19,6 +19,8 @@ namespace RollToFinal
         public int TargetIndex;
 
         public int LifeCycle = 0;
+
+
 
         void IEffectBase.OnInstantiated(object[] data)
         {
@@ -48,9 +50,9 @@ namespace RollToFinal
             GameLogic.Instance.StateBlock--;
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
         }
 
         void OnLifeCycleCallBack()
@@ -58,6 +60,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 6)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
         }

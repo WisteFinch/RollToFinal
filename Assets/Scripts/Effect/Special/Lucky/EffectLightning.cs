@@ -6,7 +6,7 @@ namespace RollToFinal
     public class Effectlightning : MonoBehaviour, IEffectBase
     {
         public string Name { get => "闪电"; }
-        public string Description { get => ""; }
+        public string Description { get => $"在玩家{((IEffectBase)this).Target}前劈下一道闪电，将方块转换为陷阱"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Calamity; }
 
@@ -34,7 +34,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

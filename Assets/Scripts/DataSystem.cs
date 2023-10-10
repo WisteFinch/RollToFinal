@@ -25,17 +25,13 @@ namespace RollToFinal
         /// </summary>
         public Dictionary<string, int> Data = new();
 
-        public bool UseJoyStick = false;
-
-        public bool EnableAI = false;
-
         private void Awake()
         {
             // 创建单例
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(this.gameObject);
+                //DontDestroyOnLoad(this.gameObject);
             }
             else
             {
@@ -46,6 +42,11 @@ namespace RollToFinal
             // 设置输入管理
             this.Input = this.gameObject.GetComponent<InputManager>();
 
+        }
+
+        public void ClearData()
+        {
+            Data.Clear();
         }
 
         /// <summary>

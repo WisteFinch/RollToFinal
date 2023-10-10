@@ -19,6 +19,8 @@ namespace RollToFinal
 
         public bool Enable = false;
 
+
+
         void IEffectBase.OnInstantiated(object[] data)
         {
             // 确定目标
@@ -65,9 +67,9 @@ namespace RollToFinal
             }
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
-            lc += OnLifeCycleCallBack;
+            GameLogic.Instance.LifeCycleCallBack += OnLifeCycleCallBack;
             return;
         }
 
@@ -76,6 +78,7 @@ namespace RollToFinal
             LifeCycle++;
             if (LifeCycle >= 4)
             {
+                GameLogic.Instance.LifeCycleCallBack -= OnLifeCycleCallBack;
                 ((IEffectBase)this).OnLapsed();
             }
 

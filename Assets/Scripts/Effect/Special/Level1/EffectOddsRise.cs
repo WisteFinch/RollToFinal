@@ -5,7 +5,7 @@ namespace RollToFinal
     public class EffectOddsRise : MonoBehaviour, IEffectBase
     {
         public string Name { get => "点数分布提高"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的概率分布提高"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Gain; }
 
@@ -27,24 +27,24 @@ namespace RollToFinal
             {
                 var delta = GameLogic.Instance.Player1OddsDelta;
                 for (int i = 0; i < 3; i++)
-                    delta[i] -= 5f;
+                    delta[i] -= 10f;
                 for (int i = 3; i < delta.Count; i++)
-                    delta[i] += 5f;
+                    delta[i] += 10f;
             }
             else
             {
                 var delta = GameLogic.Instance.Player2OddsDelta;
                 for (int i = 0; i < 3; i++)
-                    delta[i] -= 5f;
+                    delta[i] -= 10f;
                 for (int i = 3; i < delta.Count; i++)
-                    delta[i] += 5f;
+                    delta[i] += 10f;
             }
             GameLogic.Instance.CalcOdds();
             // 使自身失效
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

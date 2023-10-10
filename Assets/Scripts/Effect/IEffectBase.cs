@@ -5,22 +5,25 @@ using UnityEngine;
 
 namespace RollToFinal
 {
+
+    /// <summary>
+    /// 回合开始委托
+    /// </summary>
+    public delegate void TurnStartCallBack();
+
+    /// <summary>
+    /// 回合结束委托
+    /// </summary>
+    public delegate void TurnEndCallBack();
+
+    /// <summary>
+    /// 生命周期检测委托
+    /// </summary>
+    public delegate void LifeCycleCallBack();
+
     interface IEffectBase
     {
-        /// <summary>
-        /// 回合开始委托
-        /// </summary>
-        public delegate void TurnStartCallBack();
-
-        /// <summary>
-        /// 回合结束委托
-        /// </summary>
-        public delegate void TurnEndCallBack();
-
-        /// <summary>
-        /// 生命周期检测委托
-        /// </summary>
-        public delegate void LifeCycleCallBack();
+        
 
         /// <summary>
         /// 效果类型
@@ -54,7 +57,7 @@ namespace RollToFinal
         /// <summary>
         /// 注册委托
         /// </summary>
-        public void Register(ref TurnStartCallBack start, ref TurnEndCallBack end, ref LifeCycleCallBack lc);
+        public void Register();
 
         /// <summary>
         /// 实例化时调用

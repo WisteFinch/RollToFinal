@@ -6,7 +6,7 @@ namespace RollToFinal
     public class EffectMove10 : MonoBehaviour, IEffectBase
     {
         public string Name { get => "移动十步"; }
-        public string Description { get => ""; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}获得10点移动力"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Lucky; }
 
@@ -30,7 +30,7 @@ namespace RollToFinal
 
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }

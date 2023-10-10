@@ -4,8 +4,8 @@ namespace RollToFinal
 {
     public class EffectOddsLevelReduce : MonoBehaviour, IEffectBase
     {
-        public string Name { get => "骰子降级"; }
-        public string Description { get => ""; }
+        public string Name { get => "概率降级"; }
+        public string Description { get => $"玩家{((IEffectBase)this).Target}的概率降级"; }
 
         IEffectBase.EffectType IEffectBase.Type { get => IEffectBase.EffectType.Reduce; }
 
@@ -50,7 +50,7 @@ namespace RollToFinal
             ((IEffectBase)this).OnLapsed();
         }
 
-        void IEffectBase.Register(ref IEffectBase.TurnStartCallBack start, ref IEffectBase.TurnEndCallBack end, ref IEffectBase.LifeCycleCallBack lc)
+        void IEffectBase.Register()
         {
             return;
         }
