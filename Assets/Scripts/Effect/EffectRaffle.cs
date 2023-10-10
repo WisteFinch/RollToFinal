@@ -88,10 +88,10 @@ namespace RollToFinal
 
         void IEffectBase.OnAssert()
         {
-            GameLogic.Instance.ReplaceBlock(BlockObj, NormalPerfab);
             GameLogic.Instance.StateBlock++;
             GameLogic.Instance.PlayerJudge(((IEffectBase)this).Target);
             EnableCheck = true;
+            GameLogic.Instance.OnGUIStateChange();
         }
 
         void CheckJudgeResult()
@@ -103,13 +103,18 @@ namespace RollToFinal
             GameLogic.Instance.JudgeResult = -1;
             if (JudgeResult == -1)
                 return;
+        }
+
+        public void Execute()
+        {
             // 应用效果
+            GameLogic.Instance.ReplaceBlock(BlockObj, NormalPerfab);
             var effect = EffectObj.GetComponent<IEffectBase>();
-            if ( JudgeResult > 3)
+            if (JudgeResult > 3)
             {
-                if(EffectType == 0)
+                if (EffectType == 0)
                     effect.OnAssert();
-                else if(EffectType == 1)
+                else if (EffectType == 1)
                     Destroy(EffectObj);
             }
             else

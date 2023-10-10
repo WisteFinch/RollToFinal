@@ -680,7 +680,8 @@ namespace RollToFinal
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = obj.GetComponent<IEffectBase>().Description;
-                        PlayAndInvoke(RollingDirector);
+                        GUIState = 21;
+                        OnGUIStateChange();
                     }
                     else if (PlatformBlocks[CurrentPlayer == 1 ? Player1Progress : Player2Progress].GetComponent<Block>().Type == Block.BlockType.Trap)
                     {
@@ -690,28 +691,38 @@ namespace RollToFinal
                         obj.GetComponent<IEffectBase>().Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
-                        UITitle.text = obj.GetComponent<IEffectBase>().Name;
+                        UITitle.text = "陷阱 : " + obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = obj.GetComponent<IEffectBase>().Description;
-                        PlayAndInvoke(RollingDirector);
+                        GUIState = 31;
+                        OnGUIStateChange();
                     }
-                    if(BlockEffectCheck == 0)
+                    else
                     {
-                        BlockEffectCheck++;
+                        if (BlockEffectCheck == 0)
+                        {
+                            BlockEffectCheck++;
+                            CurrentGameState = GameState.PlayerIdle;
+                        }
+                        else
+                        {
+                            BlockEffectCheck++;
+                            CurrentGameState = GameState.DelegateEnd;
+                            EnableStateCheck = true;
+                        }
+                    }
+                    break;
+                // 方块效果 --> 委托：回合结束
+                case GameState.BlockEffect:
+                    TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
+                    if (BlockEffectCheck == 1)
+                    {
                         CurrentGameState = GameState.PlayerIdle;
-                        break;
                     }
                     else
                     {
                         CurrentGameState = GameState.DelegateEnd;
                         EnableStateCheck = true;
                     }
-                    break;
-                // 方块效果 --> 委托：回合结束
-                case GameState.BlockEffect:
-                    TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
-
-                    CurrentGameState = GameState.DelegateEnd;
-                    EnableStateCheck = true;
                     break;
                 // 委托：回合结束 -> 切换玩家
                 case GameState.DelegateEnd:
@@ -792,11 +803,12 @@ namespace RollToFinal
                 // 3 : 开转
                 case 3:
                     GUIState = 4;
-                    UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
                     GUICTL.Roll(DataSystem.Instance.GetData("RollResult") - 1);
                     break;
                 // 4 : 转盘消失
                 case 4:
+                    UITitle.text = $"[{DataSystem.Instance.GetData("RollResult")}]移动";
+                    UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
                     GUIAnimator.SetTrigger("CycleEscape");
                     GUIState = 5;
                     break;
@@ -817,41 +829,130 @@ namespace RollToFinal
                     GUIState = 0;
                     break;
 
-                // 1 ：特殊开始，标题进入
+                // 11 ：特殊开始，标题进入
                 case 11:
                     StateBlock++;
                     GUIAnimator.SetTrigger("TitleEntry");
                     GUIState = 12;
                     break;
-                // 2 : 转盘进入
+                // 12 : 转盘进入
                 case 12:
-                    GUICTL.SetDivides(CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides);
+                    List<DrawPieChart.DivideItem> sdivs = new();
+                    var sPie = CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides;
+                    for (int i = 0; i < Specialodds.Count; i++)
+                    {
+                        DrawPieChart.DivideItem item = sPie[i];
+                        item.title = SpecialOptionsList[i].Title;
+                        item.ratio = Specialodds[i];
+                        sdivs.Add(item);
+                    }
+                    GUICTL.SetDivides(sdivs);
                     GUIAnimator.SetTrigger("CycleEntry");
                     GUIState = 13;
                     break;
-                // 3 : 开转
+                // 13 : 开转
                 case 13:
                     GUIState = 14;
-                    UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description;
                     GUICTL.Roll(DataSystem.Instance.GetData("RollResult"));
                     break;
-                // 4 : 转盘消失
+                // 14 : 转盘消失
                 case 14:
+                    var effect = TempEffectInstance.GetComponent<IEffectBase>();
+                    int res = DataSystem.Instance.GetData("RollResult");
+                    if (CalcBalance(effect.Target, effect.Type))
+                    {
+                        UITitle.text = $"[{SpecialOptionsList[res - 1].Title}]抽奖 : {effect.Name}";
+                        UIDescription.text = effect.Description;
+                    }
+                    else
+                    {
+                        UITitle.text = $"[{SpecialOptionsList[res - 1].Title}]抽奖 : {effect.Name}";
+                        UIDescription.text = "该效果已被抵消";
+                        Destroy(TempEffectInstance);
+                    }
                     GUIAnimator.SetTrigger("CycleEscape");
                     GUIState = 15;
                     break;
-                // 5 : 显示提示，等待
+                // 15 : 显示提示，等待
                 case 15:
                     Invoke(nameof(OnGUIStateChange), 2f);
                     GUIState = 16;
                     break;
-                // 6 : 标题离开
+                // 16 : 标题离开
                 case 16:
                     GUIAnimator.SetTrigger("TitleEscape");
                     GUIState = 17;
                     break;
-                // 7 : 结束
+                // 17 : 结束
                 case 17:
+                    StateBlock--;
+                    OnChangeState();
+                    GUIState = 0;
+                    break;
+                // 21 ：机遇开始，标题进入
+                case 21:
+                    StateBlock++;
+                    GUIAnimator.SetTrigger("TitleEntry");
+                    GUIState = 28;
+                    break;
+                // 28 ：等待
+                case 28:
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 29;
+                    break;
+                // 29 ：检查状态
+                case 29:
+                    OnChangeState();
+                    GUIState = 22;
+                    break;
+                // 22 : 转盘进入
+                case 22:
+                    List<DrawPieChart.DivideItem> rdivs = new();
+                    var rPie = CurrentPlayer == 1 ? Player1PieChart.PieChart.Divides : Player2PieChart.PieChart.Divides;
+                    for (int i = 0; i < 6; i++)
+                    {
+                        DrawPieChart.DivideItem item = rPie[i];
+                        item.title = (i + 1).ToString();
+                        item.ratio = 1f;
+                        rdivs.Add(item);
+                    }
+                    GUICTL.SetDivides(rdivs);
+                    UIDescription.text = "";
+                    GUIAnimator.SetTrigger("CycleEntry");
+                    GUIState = 23;
+                    break;
+                // 23 : 开转
+                case 23:
+                    GUIState = 24;
+                    GUICTL.Roll(Math.Clamp(TempEffectInstance.GetComponent<EffectRaffle>().JudgeResult - 1, 0, 5));
+                    break;
+                // 24 : 转盘消失
+                case 24:
+                    UITitle.text = $"[{TempEffectInstance.GetComponent<EffectRaffle>().JudgeResult}]{TempEffectInstance.GetComponent<IEffectBase>().Name}";
+                    GUIAnimator.SetTrigger("CycleEscape");
+                    GUIState = 25;
+                    break;
+                // 25 : 显示提示，等待
+                case 25:
+                    if(TempEffectInstance.GetComponent<EffectRaffle>().JudgeResult > 3)
+                    {
+                        UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description + "\n判定成功";
+                    }
+                    else
+                    {
+                        UIDescription.text = TempEffectInstance.GetComponent<IEffectBase>().Description + "\n判定失败";
+                    }
+                    Invoke(nameof(OnGUIStateChange), 2f);
+                    GUIState = 26;
+                    break;
+                // 16 : 标题离开
+                case 26:
+                    TempEffectInstance.GetComponent<EffectRaffle>().Execute();
+                    GUIAnimator.SetTrigger("TitleEscape");
+                    GUIState = 27;
+                    break;
+                // 17 : 结束
+                case 27:
                     StateBlock--;
                     OnChangeState();
                     GUIState = 0;
@@ -1087,16 +1188,9 @@ namespace RollToFinal
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
                 effect.Register(ref TurnStartCallBack, ref TurnEndCallBack, ref LifeCycleCallBack);
                 effect.OnInstantiated(new object[] { res - 1 });
-                if (CalcBalance(effect.Target, effect.Type))
-                {
-                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : {effect.Name}";
-                }
-                else
-                {
-                    UITitle.text = $"{SpecialOptionsList[res - 1].Title} : <color=#aaaaaa>{effect.Name}</color>";
-                    Destroy(TempEffectInstance);
-                }
-                UIDescription.text = effect.Description;
+
+                UITitle.text = "抽奖";
+                UIDescription.text = "";
 
                 GUIState = 11;
                 OnGUIStateChange();
@@ -1131,11 +1225,8 @@ namespace RollToFinal
                     res = 1;
             }
             JudgeResult = res;
-            // 设置UI
-            UITitle.text = $"判定 : {res}";
-            UIDescription.text = "";
 
-            PlayAndInvoke(RollingDirector);
+            OnGUIStateChange();
         }
 
 

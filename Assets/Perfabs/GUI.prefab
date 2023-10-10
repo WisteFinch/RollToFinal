@@ -358,7 +358,7 @@ MonoBehaviour:
     ratio: 0
     title: 10
   TextRadiusOffset: 10
-  ShowDividesRatio: 1
+  ShowDividesRatio: 0
   DivideRatioColor: {r: 1, g: 1, b: 1, a: 1}
   TextStyle:
     m_Name: 
