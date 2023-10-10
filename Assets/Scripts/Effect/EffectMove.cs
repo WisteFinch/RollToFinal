@@ -23,11 +23,14 @@ namespace RollToFinal
             var instance = GameLogic.Instance;
             var player = ((IEffectBase)this).Target == 1 ? instance.Player1 : instance.Player2;
             //Vector3 pos = player.transform.position;
-            //int stepSize = (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1Reverse") : DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
-            //int progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
+            int stepSize = (((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1Reverse") : DataSystem.Instance.GetData("Player2Reverse")) == 1 ? -1 : 1;
+            int progress = ((IEffectBase)this).Target == 1 ? instance.Player1Progress : instance.Player2Progress;
             //var platform = instance.PlatformBlocks;
 
             if ((((IEffectBase)this).Target == 1 ? DataSystem.Instance.GetData("Player1ForzenMove") : DataSystem.Instance.GetData("Player2ForzenMove")) > 0)
+                Movement = 0;
+
+            if (progress == 0 && stepSize == -1)
                 Movement = 0;
 
             //// 判断方块

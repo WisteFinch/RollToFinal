@@ -667,6 +667,7 @@ namespace RollToFinal
                 case GameState.Rolling:
                     // 应用效果
                     CurrentGameState = GameState.Moving;
+                    TempEffectInstance.GetComponent<IEffectBase>().Register();
                     TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                     EnableStateCheck = true;
                     break;
@@ -677,12 +678,12 @@ namespace RollToFinal
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
                         var obj = Instantiate(EffectRaffle, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register();
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = obj.GetComponent<IEffectBase>().Description;
                         GUIState = 21;
+                        obj.GetComponent<IEffectBase>().Register();
                         TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                         OnGUIStateChange();
                         BlockEffectCheck++;
@@ -692,12 +693,12 @@ namespace RollToFinal
                         EnableStateCheck = false;
                         CurrentGameState = GameState.BlockEffect;
                         var obj = Instantiate(EffectTrap, Effects.transform.position, Quaternion.identity, Effects.transform);
-                        obj.GetComponent<IEffectBase>().Register();
                         obj.GetComponent<IEffectBase>().OnInstantiated();
                         TempEffectInstance = obj;
                         UITitle.text = obj.GetComponent<IEffectBase>().Name;
                         UIDescription.text = "判定值大于3：概率升级\n判定值小于等于3：概率降级";
                         GUIState = 31;
+                        obj.GetComponent<IEffectBase>().Register();
                         TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                         OnGUIStateChange();
                         BlockEffectCheck++;
@@ -753,6 +754,7 @@ namespace RollToFinal
                     // 应用效果
                     if (TempEffectInstance != null)
                     {
+                        TempEffectInstance.GetComponent<IEffectBase>().Register();
                         TempEffectInstance.GetComponent<IEffectBase>().OnAssert();
                     }
                     EnableStateCheck = true;
@@ -797,7 +799,7 @@ namespace RollToFinal
             float r = 360f / count;
             for(int i = 0; i < count; i++)
             {
-                Vector3 pos = new(MathF.Sin(Mathf.Deg2Rad * i * r) * 30, 0, MathF.Cos(Mathf.Deg2Rad * i * r) * 30);
+                Vector3 pos = new(MathF.Sin(Mathf.Deg2Rad * i * r) * 30, 0, MathF.Cos(Mathf.Deg2Rad * i * r) * 30 + Length);
                 Particles.getFirework(pos);
             }
             GUIAnimator.SetTrigger("TitleEntry");
@@ -1225,7 +1227,9 @@ namespace RollToFinal
         /// <param name="Player">玩家序号</param>
         public void PlayerRoll(int player)
         {
-            if(player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
+            if (CurrentGameState != GameState.PlayerIdle)
+                return;
+            if (player == CurrentPlayer &&  CurrentGameState == GameState.PlayerIdle)
             {
                 CurrentGameState = GameState.Rolling;
                 EnableStateCheck = false;
@@ -1251,6 +1255,8 @@ namespace RollToFinal
         /// </summary>
         public void PlayerSpecialRoll(int player)
         {
+            if (CurrentGameState != GameState.PlayerIdle)
+                return;
             if(CurrentPlayer == 1)
             {
                 if (DataSystem.Instance.GetData("Player1SpecialRollCount") <= 0)
@@ -1291,7 +1297,6 @@ namespace RollToFinal
                 var perfab = SpecialOptionsList[res - 1].Effects[index];
                 TempEffectInstance = Instantiate(perfab, Effects.transform.position, Quaternion.identity, Effects.transform);
                 var effect = TempEffectInstance.GetComponent<IEffectBase>();
-                effect.Register();
                 effect.OnInstantiated(new object[] { res - 1 });
 
                 UITitle.text = "抽奖";

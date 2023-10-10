@@ -174,7 +174,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 80
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -216,7 +216,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100, y: 20}
+  m_AnchoredPosition: {x: -150, y: 20}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4097951212688427700
@@ -357,7 +357,7 @@ MonoBehaviour:
   - color: {r: 0.9411765, g: 0.972549, b: 1, a: 1}
     ratio: 0
     title: 10
-  TextRadiusOffset: -20
+  TextRadiusOffset: -30
   ShowDividesRatio: 0
   DivideRatioColor: {r: 1, g: 1, b: 1, a: 1}
   TextStyle:
@@ -415,7 +415,7 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 20
+    m_FontSize: 30
     m_FontStyle: 0
     m_Alignment: 4
     m_WordWrap: 0
@@ -429,8 +429,8 @@ MonoBehaviour:
     m_StretchHeight: 0
   m_sprite: {fileID: 0}
   Type: 0
-  InnerRadius: 25
-  OuterRadius: 75
+  InnerRadius: 50
+  OuterRadius: 125
   m_fillAmount: 1
   Segments: 360
   m_rotate: 90
@@ -469,7 +469,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 100, y: 20}
+  m_AnchoredPosition: {x: 150, y: 20}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3534409912246491091
@@ -708,7 +708,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 75}
+  m_AnchoredPosition: {x: 0, y: 120}
   m_SizeDelta: {x: 50, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4874219465736930262
@@ -784,7 +784,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100, y: 100}
+  m_AnchoredPosition: {x: -150, y: 150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6987299962159732765
@@ -846,7 +846,7 @@ MonoBehaviour:
   - color: {r: 0.85882354, g: 0.4392157, b: 0.5764706, a: 1}
     ratio: 0
     title: 10
-  TextRadiusOffset: 10
+  TextRadiusOffset: -20
   ShowDividesRatio: 1
   DivideRatioColor: {r: 1, g: 1, b: 1, a: 1}
   TextStyle:
@@ -904,7 +904,7 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 15
+    m_FontSize: 20
     m_FontStyle: 0
     m_Alignment: 4
     m_WordWrap: 0
@@ -918,8 +918,8 @@ MonoBehaviour:
     m_StretchHeight: 0
   m_sprite: {fileID: 0}
   Type: 0
-  InnerRadius: 25
-  OuterRadius: 50
+  InnerRadius: 50
+  OuterRadius: 100
   m_fillAmount: 1
   Segments: 360
   m_rotate: 90
@@ -1162,7 +1162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 150, y: 150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3777998638870375892
@@ -1224,7 +1224,7 @@ MonoBehaviour:
   - color: {r: 0.9411765, g: 0.972549, b: 1, a: 1}
     ratio: 0
     title: 10
-  TextRadiusOffset: 10
+  TextRadiusOffset: -20
   ShowDividesRatio: 1
   DivideRatioColor: {r: 1, g: 1, b: 1, a: 1}
   TextStyle:
@@ -1282,7 +1282,7 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 15
+    m_FontSize: 20
     m_FontStyle: 0
     m_Alignment: 4
     m_WordWrap: 0
@@ -1296,8 +1296,8 @@ MonoBehaviour:
     m_StretchHeight: 0
   m_sprite: {fileID: 0}
   Type: 0
-  InnerRadius: 25
-  OuterRadius: 50
+  InnerRadius: 50
+  OuterRadius: 100
   m_fillAmount: 1
   Segments: 360
   m_rotate: 90

@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace RollToFinal
@@ -143,6 +144,11 @@ namespace RollToFinal
                 else
                 {
                     JumpProgress += Time.deltaTime * JumpSpeed;
+                }
+                if(playerProgress == 0 && dir == -1)
+                {
+                    JumpProgress += 1;
+                    return;
                 }
                 // 计算跳跃类型
                 var currentBlock = GameLogic.Instance.PlatformBlocks[playerProgress].GetComponent<Block>().Type;

@@ -48,7 +48,6 @@ namespace RollToFinal
                 var EffectPerfab = GameLogic.Instance.RaffleOptionsList[EffectType].Effects[index];
                 EffectObj = Instantiate(EffectPerfab, GameLogic.Instance.Effects.transform.position, Quaternion.identity, GameLogic.Instance.Effects.transform);
                 effect = EffectObj.GetComponent<IEffectBase>();
-                effect.Register();
                 effect.OnInstantiated();
 
                 EffectReverseRaffle e1;
@@ -107,7 +106,10 @@ namespace RollToFinal
             if (JudgeResult > 3)
             {
                 if (EffectType == 0)
+                {
+                    effect.Register();
                     effect.OnAssert();
+                }
                 else if (EffectType == 1)
                     Destroy(EffectObj);
             }
@@ -116,7 +118,10 @@ namespace RollToFinal
                 if (EffectType == 0)
                     Destroy(EffectObj);
                 else if (EffectType == 1)
+                {
+                    effect.Register();
                     effect.OnAssert();
+                }
             }
             GameLogic.Instance.CSCallBack -= CheckJudgeResult;
             GameLogic.Instance.StateBlock--;
